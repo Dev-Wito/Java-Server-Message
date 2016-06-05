@@ -6,6 +6,7 @@
 package core;
 
 import Config.DataBase;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -18,6 +19,8 @@ public class servidor {
      */
     public static void main(String[] args) {
         DataBase N = new DataBase();
+        JSONObject obj = new JSONObject();
+        new servicios_ini().start();
     }
 
 }
