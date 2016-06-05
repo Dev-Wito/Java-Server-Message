@@ -1,10 +1,6 @@
 
 import core.json;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
+import core.pasarela;
 import org.json.simple.JSONObject;
 
 /*
@@ -35,6 +31,8 @@ public class NewJFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -45,20 +43,28 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(148, 148, 148)
-                .addComponent(jButton1)
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(267, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -66,27 +72,15 @@ public class NewJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        BufferedReader Teclas; //Teclas del cliente
-        DataInputStream Response; //Desde el Servidor
-        PrintWriter callback; // Haciea el servidor
-        Socket Soquete = null;
-        JSONObject send = new JSONObject();
-        send.put("API", "combologi2n");
-        String MSJ = json.encode(send);
-        int COUNT = 1;
-        try {
-            Soquete = new Socket("127.0.0.1", 6969);
-            System.err.println("Se ha conectado al servidor tio!!");
-            Response = new DataInputStream(Soquete.getInputStream());
-            callback = new PrintWriter(Soquete.getOutputStream(), true);
-            callback.println(MSJ);
-            MSJ = Response.readUTF();
-            System.err.println(MSJ);
-            Soquete.close();
-        } catch (IOException ex) {
-            System.err.println("Sin Cliente");
-            
-        }
+        JSONObject Preparar = new JSONObject();
+        JSONObject Parametros = new JSONObject();
+        Parametros.put("usu", "wito");
+        Parametros.put("pass", "wito");
+        Preparar.put("API", "autenticar");
+        Preparar.put("parameters", json.encode(Parametros));
+        String rtaCon = pasarela.call(Preparar);
+        jTextArea1.setText(rtaCon);
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -126,5 +120,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }

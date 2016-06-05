@@ -11,8 +11,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.spi.DirStateFactory.Result;
 import org.json.simple.JSONObject;
 
 /**
@@ -20,6 +25,12 @@ import org.json.simple.JSONObject;
  * @author wito
  */
 public class servicios_ini extends Thread {
+
+    public static Connection ConectDB;
+
+    public servicios_ini(Connection Conexion) {
+        servicios_ini.ConectDB = Conexion;
+    }
 
     public void run() {
         BufferedReader Cabezon;
@@ -32,7 +43,7 @@ public class servicios_ini extends Thread {
             System.out.println("Servicios Iniciados");
             while (true) {
                 Soquete = Cerebellum.accept();
-                System.out.println("Conexión iniciada");
+                System.out.println("Solicitud del cliente");
                 Cabezon = new BufferedReader(new InputStreamReader(Soquete.getInputStream()));
                 alCabezon = new DataOutputStream(Soquete.getOutputStream());
                 MSJ = Cabezon.readLine();
@@ -49,15 +60,81 @@ public class servicios_ini extends Thread {
         JSONObject obj = null;
         obj = json.decode(solicitud);
         String API = obj.get("API").toString();
-        String Response = null;
+        String Response = "{}";
         switch (API) {
             case "combologin":
+                Response = listarUsuarios();
+                break;
+            case "autenticar":
+                Response = autenticar(obj.get("parameters").toString());
                 break;
             default:
                 obj.clear();
                 obj.put("error", true);
                 obj.put("msg", "No se reconoce el servicio");
                 return json.encode(obj);
+        }
+        return Response;
+    }
+
+    protected String listarUsuarios() {
+        ResultSet Response = null;
+        String rta = "";
+        Response = getQuery("SELECT usuario FROM usuarios");
+        try {
+
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String usuarios[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                usuarios[v] = Response.getString("usuario");
+            }
+            rta = "{\"usuarios\":[\"" + String.join("\",\"", usuarios) + "\"]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return rta;
+    }
+
+    protected String autenticar(String Parametros) {
+        String rta = "";
+        JSONObject Param = json.decode(Parametros);
+        ResultSet Response = this.getQuery("SELECT COUNT(usuarios.id) AS Exist, usuarios.id , usuarios.persona_id, personas.num_ident, personas.nombres, personas.correo, personas.celular, usuarios.usuario, usuarios.llave, usuarios.rol FROM usuarios INNER JOIN personas  ON (usuarios.persona_id = personas.id) WHERE usuario='" + Param.get("usu").toString() + "' AND llave=PASSWORD('" + Param.get("pass") + "')");
+        try {
+            while (Response.next()) {
+                Param.clear();
+                Param.put("Auth", Response.getInt("Exist"));
+                Param.put("Usu_id", Response.getInt("id"));
+                Param.put("Per_id", Response.getInt("persona_id"));
+                Param.put("Per_nid", Response.getString("num_ident"));
+                Param.put("Per_nom", Response.getString("nombres"));
+                Param.put("Per_correo", Response.getString("correo"));
+                Param.put("Per_cel", Response.getString("celular"));
+                Param.put("Usu_login", Response.getString("usuario"));
+                Param.put("Usu_pass", Response.getString("llave"));
+                Param.put("Usu_rol", Response.getString("rol"));
+                break;
+            }
+            rta = json.encode(Param);
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
+    }
+
+    protected ResultSet getQuery(String SQL) {
+        ResultSet Response = null;
+        Statement Query;
+        if (ConectDB != null) {
+            try {
+                Query = ConectDB.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                Response = Query.executeQuery(SQL);
+            } catch (SQLException ex) {
+                System.err.println("No Se:" + ex);
+                return null;
+            }
         }
         return Response;
     }

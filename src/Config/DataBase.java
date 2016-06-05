@@ -29,7 +29,7 @@ public class DataBase {
                 String servidor = "jdbc:mysql://" + Array_Storages[i].getServer() + ":3306/" + Array_Storages[i].getBase();
                 System.out.println("Queriendo Conectar " + servidor + "/");
                 Intentos++;
-                MY_CX = DriverManager.getConnection(Array_Storages[i].getServer(), Array_Storages[i].getUsuario(), Array_Storages[i].getContra());
+                MY_CX = DriverManager.getConnection(servidor, Array_Storages[i].getUsuario(), Array_Storages[i].getContra());
                 break;
             } catch (ClassNotFoundException ex) {
                 System.out.println("No Se Realizo La Conexión Clase No Encontrada");
@@ -38,7 +38,7 @@ public class DataBase {
             }
         }
 
-        if (Array_Storages.length >= Intentos) {
+        if (Intentos>=Array_Storages.length) {
             MY_CX = null;
             System.err.println("No hay bases de datos disponibles");
         }
