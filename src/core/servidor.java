@@ -5,7 +5,8 @@
  */
 package core;
 
-import Config.DataBase;
+import config.DataBase;
+import interfaces.Login;
 
 /**
  *
@@ -17,8 +18,12 @@ public class servidor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        DataBase N = new DataBase();
-        new servicios_ini(N.getConexion()).start();
+        if (args.length > 0 && args[0].equals("cliente")) {
+            Login.main(null);
+        } else {
+            DataBase N = new DataBase();
+            new servicios_ini(N.getConexion()).start();
+        }
     }
 
 }

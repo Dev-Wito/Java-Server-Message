@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Config;
+package config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
+import javax.swing.JOptionPane;
 
 public class DataBase {
 
@@ -44,6 +45,7 @@ public class DataBase {
         if (Intentos >= Array_Storages.length) {
             MY_CX = null;
             System.err.println("No hay bases de datos disponibles");
+            JOptionPane.showMessageDialog(null, "No Hay bases de datos disponibles", "Error de comunicacion", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
 
