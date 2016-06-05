@@ -30,17 +30,21 @@ public class DataBase {
                 System.out.println("Queriendo Conectar " + servidor + "/");
                 Intentos++;
                 MY_CX = DriverManager.getConnection(servidor, Array_Storages[i].getUsuario(), Array_Storages[i].getContra());
-                break;
+                if (MY_CX != null) {
+                    Intentos=0;
+                    break;
+                }
             } catch (ClassNotFoundException ex) {
                 System.out.println("No Se Realizo La Conexión Clase No Encontrada");
             } catch (SQLException ex) {
-                System.out.println("No Se Realizo La Conexión, Errores en valores de conexion");
+                System.out.println("No Se Realizo La Conexión, Errores en valores de conexion o disponibilidad del servicio");
             }
         }
 
-        if (Intentos>=Array_Storages.length) {
+        if (Intentos >= Array_Storages.length) {
             MY_CX = null;
             System.err.println("No hay bases de datos disponibles");
+            System.exit(0);
         }
 
         return MY_CX;

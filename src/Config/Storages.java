@@ -84,6 +84,7 @@ public final class Storages {
                 this.setBase(resultado.getString("database"));
                 break;
             }
+            CX.close();
         } catch (SQLException ex) {
             System.err.println("No se pudo ejecturar la consulta a la base maestra");
         }
