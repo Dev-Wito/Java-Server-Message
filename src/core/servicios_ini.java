@@ -24,13 +24,28 @@ import org.json.simple.JSONObject;
  * @author wito
  */
 public class servicios_ini extends Thread {
-
+    
     public static Connection ConectDB;
-
+    
     public servicios_ini(Connection Conexion) {
         servicios_ini.ConectDB = Conexion;
     }
-
+    
+    protected ResultSet getQuery(String SQL) {
+        ResultSet Response = null;
+        Statement Query;
+        if (ConectDB != null) {
+            try {
+                Query = ConectDB.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                Response = Query.executeQuery(SQL);
+            } catch (SQLException ex) {
+                System.err.println("No Se:" + ex);
+                return null;
+            }
+        }
+        return Response;
+    }
+    
     public void run() {
         BufferedReader Cabezon;
         DataOutputStream alCabezon;
@@ -54,7 +69,7 @@ public class servicios_ini extends Thread {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     protected String service(String solicitud) {
         JSONObject obj = null;
         obj = json.decode(solicitud);
@@ -70,6 +85,9 @@ public class servicios_ini extends Thread {
             case "getSucursal":
                 Response = getSucursal(obj.get("ID").toString());
                 break;
+            case "getCuentasUsuario":
+                Response = getCuentasUsuario(obj.get("persona_id").toString());
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -78,13 +96,13 @@ public class servicios_ini extends Thread {
         }
         return Response;
     }
-
+    
     protected String listarUsuarios() {
         ResultSet Response = null;
         String rta = "";
         Response = getQuery("SELECT usuario FROM usuarios");
         try {
-
+            
             Response.last();
             int cantFilas = Response.getRow();
             Response.beforeFirst();
@@ -96,10 +114,10 @@ public class servicios_ini extends Thread {
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         return rta;
     }
-
+    
     protected String autenticar(String Parametros) {
         String rta = "";
         JSONObject Param = json.decode(Parametros);
@@ -124,7 +142,7 @@ public class servicios_ini extends Thread {
         }
         return rta;
     }
-
+    
     protected String getSucursal(String ID) {
         String rta = "";
         JSONObject vector = new JSONObject();
@@ -132,8 +150,8 @@ public class servicios_ini extends Thread {
         try {
             while (Response.next()) {
                 vector.put("valida", Response.getInt("Existe"));
-                vector.put("nom_suc",Response.getString("nombre"));
-                vector.put("ciu_suc",Response.getString("ciudad"));
+                vector.put("nom_suc", Response.getString("nombre"));
+                vector.put("ciu_suc", Response.getString("ciudad"));
                 vector.put("dir_suc", Response.getString("direccion"));
                 break;
             }
@@ -142,19 +160,23 @@ public class servicios_ini extends Thread {
         }
         return json.encode(vector);
     }
-
-    protected ResultSet getQuery(String SQL) {
-        ResultSet Response = null;
-        Statement Query;
-        if (ConectDB != null) {
-            try {
-                Query = ConectDB.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                Response = Query.executeQuery(SQL);
-            } catch (SQLException ex) {
-                System.err.println("No Se:" + ex);
-                return null;
+    
+    protected String getCuentasUsuario(String $ID) {
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT numero_cuenta FROM cuentas WHERE persona_id='" + $ID + "'");
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String cuentas[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                cuentas[v] = Response.getString("numero_cuenta");
             }
+            $rta = "{\"cuentas\":[\"" + String.join("\",\"", cuentas) + "\"]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return Response;
+        return $rta;
     }
 }
