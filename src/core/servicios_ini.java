@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -91,6 +92,9 @@ public class servicios_ini extends Thread {
             case "getTipoMovimiento":
                 Response = getTipoMovimiento();
                 break;
+            case "setMovimiento":
+                Response = setMovimiento(obj);
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -167,7 +171,7 @@ public class servicios_ini extends Thread {
     protected String getCuentasUsuario(String $ID) {
         String $rta = "";
         JSONObject vector = new JSONObject();
-        ResultSet Response = this.getQuery("SELECT cuentas.id,CONCAT(\"Cuenta: \",tipo_cuentas.nombre,\" N°:\", cuentas.numero_cuenta) AS label FROM cuentas INNER JOIN tipo_cuentas  ON (cuentas.tipo_cuenta_id = tipo_cuentas.id) WHERE cuentas.persona_id=" + $ID);
+        ResultSet Response = this.getQuery("SELECT cuentas.id,CONCAT(tipo_cuentas.nombre,\" N°:\", cuentas.numero_cuenta) AS label FROM cuentas INNER JOIN tipo_cuentas  ON (cuentas.tipo_cuenta_id = tipo_cuentas.id) WHERE cuentas.persona_id=" + $ID);
         try {
             Response.last();
             int cantFilas = Response.getRow();
@@ -206,5 +210,39 @@ public class servicios_ini extends Thread {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
         return $rta;
+    }
+
+    protected String setMovimiento(JSONObject obj) {
+        String rta = "";
+        ResultSet Response;
+        String SQL_Insert = "INSERT INTO movimientos(cuenta_id,tipo_movimiento_id,sucursal_id,valor_movimiento) VALUES (?,?,?,?)";
+        try {
+            PreparedStatement Sentencia = ConectDB.prepareStatement(SQL_Insert);
+            Sentencia.setString(1, obj.get("cuenta_id").toString());
+            Sentencia.setString(2, obj.get("tipo_movimiento_id").toString());
+            Sentencia.setString(1, obj.get("sucursal_id").toString());
+            Sentencia.setString(1, obj.get("valor_movimiento").toString());
+            int rtaCon = Sentencia.executeUpdate();
+            if (rtaCon > 0) {
+                String SQL_ID = "SELECT LAST_INSERT_ID() AS ID_INSERT";
+                Response = this.getQuery(SQL_ID);
+                Response.first();
+                String SQL_Estado = "SELECT saldo_anterior,saldo,costo_movimiento FROM movimientos WHERE id=" + Response.getInt("ID_INSERT");
+                Response.close();
+                Response = this.getQuery(SQL_Estado);
+                while (Response.next()) {
+                    obj.clear();
+                    obj.put("saldo_anterior", Response.getInt("saldo_anterior"));
+                    obj.put("saldo_actual", Response.getInt("saldo"));
+                    obj.put("costo_movimiento", Response.getInt("costo_movimiento"));
+                    break;
+                }
+                rta = json.encode(obj);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
     }
 }
