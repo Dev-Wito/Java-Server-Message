@@ -7,8 +7,10 @@ package interfaces;
 
 import config.Globales;
 import config.Storages;
+import core.item_combo;
 import core.json;
 import core.pasarela;
+import javax.swing.DefaultComboBoxModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -17,13 +19,15 @@ import org.json.simple.JSONObject;
  * @author rosvel
  */
 public class cli_consignar extends javax.swing.JInternalFrame {
-
+    DefaultComboBoxModel miCombo;
     /**
      * Creates new form cli_consignar
      */
     public cli_consignar() {
         Storages.infoTerminal();
         initComponents();
+        miCombo = new DefaultComboBoxModel();
+        jComboBox1.setModel(miCombo);
         llenarCombobox();
     }
 
@@ -64,9 +68,8 @@ public class cli_consignar extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jComboBox1, 0, 400, Short.MAX_VALUE)
-                        .addComponent(jTextField1)))
+                    .addComponent(jComboBox1, 0, 400, Short.MAX_VALUE)
+                    .addComponent(jTextField1))
                 .addContainerGap(89, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -97,10 +100,12 @@ public class cli_consignar extends javax.swing.JInternalFrame {
         Preparar.clear();
         Preparar = json.decode(rta);
         JSONArray arreglo = (JSONArray) Preparar.get("cuentas");
-        jComboBox1.removeAllItems();
-        jComboBox1.addItem("Seleccione...");
+        miCombo.removeAllElements();
+        miCombo.addElement(new item_combo(0, "Seleccione..."));
         for (int i=0; i<arreglo.size(); i++){
-            jComboBox1.addItem(""+arreglo.get(i));
+            JSONObject elemento = new JSONObject();
+            elemento = json.decode(arreglo.get(i).toString());
+            miCombo.addElement(new item_combo(Integer.parseInt(elemento.get("id").toString()), elemento.get("label").toString()));
         }
     }
 

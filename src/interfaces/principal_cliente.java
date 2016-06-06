@@ -5,20 +5,33 @@
  */
 package interfaces;
 
-import javax.swing.JInternalFrame;
+import config.Globales;
+import config.Storages;
+import core.item_combo;
+import core.json;
+import core.pasarela;
+import javax.swing.DefaultComboBoxModel;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author rosvel
  */
 public class principal_cliente extends javax.swing.JFrame {
-    protected cli_consignar consignar;
+    DefaultComboBoxModel miComboAccion, miComboCuentas;
     /**
      * Creates new form principal_cliente
      */
     public principal_cliente() {
+        Storages.infoTerminal();
         initComponents();
         this.setLocationRelativeTo(null);
+        miComboAccion = new DefaultComboBoxModel();
+        miComboCuentas = new DefaultComboBoxModel();
+        jComboBox1.setModel(miComboAccion);
+        jComboBox2.setModel(miComboCuentas);
+        llenarComboCuentas();
     }
 
     /**
@@ -30,64 +43,57 @@ public class principal_cliente extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        contentPanel = new javax.swing.JDesktopPane();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBox2 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu principal");
 
-        jMenu1.setText("File");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setText("Acción");
 
-        jMenuItem1.setText("Consignar");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem1);
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText("Cuenta");
 
-        jMenuItem2.setText("jMenuItem2");
-        jMenu1.add(jMenuItem2);
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione..." }));
 
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Seguridad");
-
-        jMenuItem3.setText("Cambiar contraseña");
-        jMenu2.add(jMenuItem3);
-
-        jMenuBar1.add(jMenu2);
-
-        setJMenuBar(jMenuBar1);
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione..." }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(216, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(contentPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(514, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        consignar = new cli_consignar();
-        if (!Ocultar(consignar.getTitle())) {
-            contentPanel.add(consignar);
-        }
-        consignar.setVisible(true);
-        consignar.requestFocus();
-
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -123,26 +129,28 @@ public class principal_cliente extends javax.swing.JFrame {
             }
         });
     }
-
-    private boolean Ocultar(String Title) {
-        JInternalFrame[] Arr = contentPanel.getAllFrames();
-        boolean response = false;
-        for (int i = 0; i < Arr.length; i++) {
-            Arr[i].setVisible(false);
-            if (Arr[i].getTitle().equals(Title)) {
-                response = true;
-            }
+    
+    private void llenarComboCuentas(){
+        JSONObject Preparar = new JSONObject();
+        Preparar.put("API", "getCuentasUsuario");
+        Preparar.put("persona_id", Globales.PER_ID);
+        String rta = pasarela.call(Preparar);
+        Preparar.clear();
+        Preparar = json.decode(rta);
+        JSONArray arreglo = (JSONArray) Preparar.get("cuentas");
+        miComboCuentas.removeAllElements();
+        miComboCuentas.addElement(new item_combo(0, "Seleccione..."));
+        for (int i=0; i<arreglo.size(); i++){
+            JSONObject elemento = new JSONObject();
+            elemento = json.decode(arreglo.get(i).toString());
+            miComboCuentas.addElement(new item_combo(Integer.parseInt(elemento.get("id").toString()), elemento.get("label").toString()));
         }
-        return response;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JDesktopPane contentPanel;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
