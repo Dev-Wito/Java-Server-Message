@@ -1,5 +1,6 @@
 package interfaces;
 
+import config.Storages;
 import core.json;
 import core.pasarela;
 import java.awt.event.KeyEvent;
@@ -21,6 +22,7 @@ public class login extends javax.swing.JFrame {
      * Creates new form NewJFrame
      */
     public login() {
+        Storages.infoTerminal();
         initComponents();
         this.setLocationRelativeTo(null);
         llenarCombobox();
@@ -206,8 +208,10 @@ public class login extends javax.swing.JFrame {
                 Preparar.put("parameters", json.encode(Parametros));
                 String rta = pasarela.call(Preparar);
                 JSONObject rta2 = json.decode(rta);
-                if(rta2.get("Auth") != 0){
-                    
+                if((rta2.get("Auth").toString()).equals("1")){
+                    System.out.println("Logueado con exito");
+                } else {
+                    System.out.println("Contraseña incorrecta");
                 }
             } else {
                 jPasswordField1.requestFocus();
