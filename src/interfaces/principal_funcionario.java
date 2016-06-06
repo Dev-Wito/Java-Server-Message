@@ -8,6 +8,7 @@ package interfaces;
 import config.Storages;
 import core.json;
 import core.pasarela;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,6 +19,7 @@ import org.json.simple.JSONObject;
  */
 public class principal_funcionario extends javax.swing.JFrame {
     DefaultTableModel tablaCuentas;
+    DefaultComboBoxModel tipoCuentas, clientes;
     /**
      * Creates new form principal_funcionario
      */
@@ -236,6 +238,11 @@ public class principal_funcionario extends javax.swing.JFrame {
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione..." }));
 
         jButton3.setText("Agregar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Limpiar");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -368,12 +375,31 @@ public class principal_funcionario extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(jTextField1.getText().length()>0 && jTextField2.getText().length()>0 && jTextField3.getText().length()>0 && jTextField4.getText().length()>0 && jTextField6.getText().length()>0){
-            
+            guardarCliente();
+            jTextField1.setText("");
+            jTextField2.setText("");
+            jTextField3.setText("");
+            jTextField4.setText("");
+            jTextField6.setText("");
+            jTextField1.requestFocus();
         } else {
             jLabel6.setText("Ningun campo debe estar vacio");
             jTextField1.requestFocus();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if(jComboBox1.getSelectedIndex()!=0 && jTextField5.getText().length()>0 && jComboBox2.getSelectedIndex()!=0){
+            guardarCuenta();
+            jComboBox1.setSelectedIndex(0);
+            jTextField5.setText("");
+            jComboBox2.setSelectedIndex(0);
+            jComboBox1.requestFocus();
+        } else {
+            jLabel9.setText("No deben haber campos vacios o sin seleccionar");
+            jComboBox1.requestFocus();
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -425,6 +451,32 @@ public class principal_funcionario extends javax.swing.JFrame {
             Object[] data = {fila.get("numero_cuenta").toString(),fila.get("nombre_cuenta").toString(),fila.get("fecha_apertura").toString(),fila.get("nombre_persona").toString(),fila.get("saldo").toString()};
             tablaCuentas.addRow(data);
         }
+    }
+    
+    private void llenarTiposCuentas(){
+    
+    }
+    
+    private void llenarClientes(){
+    
+    }
+    
+    private void guardarCliente(){
+        JSONObject Preparar = new JSONObject();
+        Preparar.put("API", "setCliente");
+        Preparar.put("num_ident",jTextField1.getText());
+        Preparar.put("nombres",jTextField2.getText());
+        Preparar.put("correo",jTextField3.getText());
+        Preparar.put("celular",jTextField4.getText());
+        Preparar.put("usuario",jTextField6.getText());
+        String rta = pasarela.call(Preparar);
+        if(rta.equals("success")){
+            jLabel6.setText("Cliente guardado con exito");
+        }
+    }
+    
+    private void guardarCuenta(){
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

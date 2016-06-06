@@ -99,6 +99,9 @@ public class servicios_ini extends Thread {
             case "setMovimiento":
                 Response = setMovimiento(obj);
                 break;
+            case "setCliente":
+                Response = setCliente(obj);
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -268,5 +271,36 @@ public class servicios_ini extends Thread {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
         return $rta;
+    }
+    
+    protected String setCliente(JSONObject obj) {
+        String rta = "fail";
+        PreparedStatement SentenciaPersonas = null, SentenciaUsuarios = null;
+        String sql1 = "INSERT INTO personas (num_ident, nombres, correo, celular) VALUES (?,?,?,?)";
+        String sql2 = "INSERT INTO usuarios (persona_id, usuario, llave, rol) VALUES (?,?,PASSWORD(?),'Cliente')";
+        try {
+            SentenciaPersonas = ConectDB.prepareStatement(sql1, PreparedStatement.RETURN_GENERATED_KEYS);
+            SentenciaPersonas.setString(1, obj.get("num_ident").toString());
+            SentenciaPersonas.setString(2, obj.get("nombres").toString());
+            SentenciaPersonas.setString(3, obj.get("correo").toString());
+            SentenciaPersonas.setString(4, obj.get("celular").toString());
+            SentenciaPersonas.executeUpdate();
+            int idPersona = 0;
+            ResultSet keys = SentenciaPersonas.getGeneratedKeys();
+            keys.first();
+            idPersona = keys.getInt(1);
+            keys.close();
+            
+            SentenciaUsuarios = ConectDB.prepareStatement(sql2);
+            SentenciaUsuarios.setInt(1, idPersona);
+            SentenciaUsuarios.setString(2, obj.get("usuario").toString());
+            SentenciaUsuarios.setString(3, obj.get("usuario").toString());
+            SentenciaUsuarios.executeUpdate();
+            
+            rta = "success";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
     }
 }
