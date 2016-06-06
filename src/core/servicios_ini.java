@@ -88,6 +88,9 @@ public class servicios_ini extends Thread {
             case "getCuentasUsuario":
                 Response = getCuentasUsuario(obj.get("persona_id").toString());
                 break;
+            case "getTipoMovimiento":
+                Response = getTipoMovimiento();
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -177,6 +180,28 @@ public class servicios_ini extends Thread {
                 cuentas[v] = json.encode(vector);
             }
             $rta = "{\"cuentas\":[" + String.join(",", cuentas) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return $rta;
+    }
+
+    protected String getTipoMovimiento() {
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT id,nombre FROM tipo_movimientos");
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String cuentas[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("id", Response.getInt("id"));
+                vector.put("label", Response.getString("nombre"));
+                cuentas[v] = json.encode(vector);
+            }
+            $rta = "{\"movimientos\":[" + String.join(",", cuentas) + "]}";
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
