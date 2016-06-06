@@ -67,6 +67,9 @@ public class servicios_ini extends Thread {
             case "autenticar":
                 Response = autenticar(obj.get("parameters").toString());
                 break;
+            case "getSucursal":
+                Response = getSucursal(obj.get("ID").toString());
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -112,7 +115,6 @@ public class servicios_ini extends Thread {
                 Param.put("Per_correo", Response.getString("correo"));
                 Param.put("Per_cel", Response.getString("celular"));
                 Param.put("Usu_login", Response.getString("usuario"));
-                Param.put("Usu_pass", Response.getString("llave"));
                 Param.put("Usu_rol", Response.getString("rol"));
                 break;
             }
@@ -121,6 +123,24 @@ public class servicios_ini extends Thread {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rta;
+    }
+
+    protected String getSucursal(String ID) {
+        String rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT COUNT(id) AS Existe, nombre,ciudad,direccion FROM sucursales WHERE id='" + ID + "'");
+        try {
+            while (Response.next()) {
+                vector.put("valida", Response.getInt("Existe"));
+                vector.put("nom_suc",Response.getString("nombre"));
+                vector.put("ciu_suc",Response.getString("ciudad"));
+                vector.put("dir_suc", Response.getString("direccion"));
+                break;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return json.encode(vector);
     }
 
     protected ResultSet getQuery(String SQL) {

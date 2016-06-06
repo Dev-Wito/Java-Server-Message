@@ -5,6 +5,7 @@
  */
 package core;
 
+import config.Globales;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,7 +24,7 @@ public class pasarela {
         Socket Soquete = null;
         String MSJ = json.encode(send);
         try {
-            Soquete = new Socket("127.0.0.1", 6969);
+            Soquete = new Socket(Globales.TERMINAL_SERVER_API, Globales.TERMINAL_SERVER_PORT);
             Response = new DataInputStream(Soquete.getInputStream());
             callback = new PrintWriter(Soquete.getOutputStream(), true);
             callback.println(MSJ);
