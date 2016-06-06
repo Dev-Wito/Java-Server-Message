@@ -253,6 +253,10 @@ public class login extends javax.swing.JFrame {
                             this.setVisible(false);
                             principal_cliente.main(null);
                             break;
+                        case "Funcionario":
+                            this.setVisible(false);
+                            principal_funcionario.main(null);
+                            break;
                         default:
                             break;
                     }

@@ -239,4 +239,29 @@ public class servicios_ini extends Thread {
         }
         return rta;
     }
+    
+    protected String getCuentas(){
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT cuentas.numero_cuenta, tipo_cuentas.nombre AS nombre_cuenta, DATE_FORMAT(cuentas.fecha_apertura,\"%d-%m-%Y\") AS fecha_apertura, personas.nombres AS nombre_persona, cuentas.saldo FROM cuentas INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) INNER JOIN personas ON (personas.id=cuentas.persona_id)");
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String cuentas[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("numero_cuenta", Response.getString("numero_cuenta"));
+                vector.put("nombre_cuenta", Response.getString("nombre_cuenta"));
+                vector.put("fecha_apertura", Response.getString("fecha_apertura"));
+                vector.put("nombre_persona", Response.getString("nombre_persona"));
+                vector.put("saldo", Response.getString("saldo"));
+                cuentas[v] = json.encode(vector);
+            }
+            $rta = "{\"cuentas\":[" + String.join(",", cuentas) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return $rta;
+    }
 }
