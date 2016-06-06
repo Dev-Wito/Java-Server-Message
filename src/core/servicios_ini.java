@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -215,30 +216,23 @@ public class servicios_ini extends Thread {
     protected String setMovimiento(JSONObject obj) {
         String rta = "";
         ResultSet Response;
-        String SQL_Insert = "INSERT INTO movimientos(cuenta_id,tipo_movimiento_id,sucursal_id,valor_movimiento) VALUES (?,?,?,?)";
+        String SQL_Insert = "CALL SP_REGISTRAR_MOVIMIENTO(?,?,?,?)";
         try {
-            PreparedStatement Sentencia = ConectDB.prepareStatement(SQL_Insert);
-            Sentencia.setString(1, obj.get("cuenta_id").toString());
-            Sentencia.setString(2, obj.get("tipo_movimiento_id").toString());
-            Sentencia.setString(3, obj.get("sucursal_id").toString());
-            Sentencia.setString(4, obj.get("valor_movimiento").toString());
-            int rtaCon = Sentencia.executeUpdate();
-            if (rtaCon > 0) {
-                String SQL_ID = "SELECT LAST_INSERT_ID() AS ID_INSERT";
-                Response = this.getQuery(SQL_ID);
-                Response.first();
-                String SQL_Estado = "SELECT saldo_anterior,saldo,costo_movimiento FROM movimientos WHERE id=" + Response.getInt("ID_INSERT");
-                Response.close();
-                Response = this.getQuery(SQL_Estado);
-                while (Response.next()) {
-                    obj.clear();
-                    obj.put("saldo_anterior", Response.getInt("saldo_anterior"));
-                    obj.put("saldo_actual", Response.getInt("saldo"));
-                    obj.put("costo_movimiento", Response.getInt("costo_movimiento"));
-                    break;
-                }
-                rta = json.encode(obj);
-            }
+            CallableStatement Sentencia = ConectDB.prepareCall(SQL_Insert);
+            Sentencia.setInt(1, Integer.parseInt(obj.get("cuenta_id").toString()));
+            Sentencia.setInt(2, Integer.parseInt(obj.get("tipo_movimiento_id").toString()));
+            Sentencia.setInt(3, Integer.parseInt(obj.get("sucursal_id").toString()));
+            Sentencia.setInt(4, Integer.parseInt(obj.get("valor_movimiento").toString()));
+            Sentencia.execute();
+
+            obj.clear();
+            obj.put("result", Sentencia.getInt("result"));
+            obj.put("msg", Sentencia.getString("MSG"));
+            obj.put("saldo_anterior", Sentencia.getInt("saldo_anterior"));
+            obj.put("saldo_actual", Sentencia.getInt("saldo"));
+            obj.put("costo_movimiento", Sentencia.getInt("costo_movimiento"));
+
+            rta = json.encode(obj);
 
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);

@@ -237,11 +237,17 @@ public class principal_cliente extends javax.swing.JFrame {
         Preparar.put("sucursal_id", Globales.TERMINAL_ID);
         Preparar.put("valor_movimiento", (jTextField1.getText().equals("") ? 0 : jTextField1.getText()));
         String rta = pasarela.call(Preparar);
+        String print;
         JSONObject vector = json.decode(rta);
-        String print = "Monto del movimiento: " + jTextField1.getText() + "\n"
-                + "Costo del movimiento: " + vector.get("costo_movimiento") + "\n"
-                + "Saldo anterior: " + vector.get("saldo_anterior") + "\n"
-                + "Saldo actual: " + vector.get("saldo_actual");
+        if (vector.get("result").toString().equals("1")) {
+            print = "Monto del movimiento: " + jTextField1.getText() + "\n"
+                    + "Costo del movimiento: " + vector.get("costo_movimiento") + "\n"
+                    + "Saldo anterior: " + vector.get("saldo_anterior") + "\n"
+                    + "Saldo actual: " + vector.get("saldo_actual");
+
+        } else {
+            print = vector.get("MSG").toString();
+        }
         resumen_operacion.setText(print);
     }//GEN-LAST:event_jButton1ActionPerformed
 
