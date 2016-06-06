@@ -5,6 +5,7 @@
  */
 package core;
 
+import config.Globales;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class servicios_ini extends Thread {
         Socket Soquete = null;
         String MSJ;
         try {
-            Cerebellum = new ServerSocket(6969);
+            Cerebellum = new ServerSocket(Globales.TERMINAL_SERVER_PORT);
             System.out.println("Servicios Iniciados");
             while (true) {
                 Soquete = Cerebellum.accept();
@@ -220,8 +221,8 @@ public class servicios_ini extends Thread {
             PreparedStatement Sentencia = ConectDB.prepareStatement(SQL_Insert);
             Sentencia.setString(1, obj.get("cuenta_id").toString());
             Sentencia.setString(2, obj.get("tipo_movimiento_id").toString());
-            Sentencia.setString(1, obj.get("sucursal_id").toString());
-            Sentencia.setString(1, obj.get("valor_movimiento").toString());
+            Sentencia.setString(3, obj.get("sucursal_id").toString());
+            Sentencia.setString(4, obj.get("valor_movimiento").toString());
             int rtaCon = Sentencia.executeUpdate();
             if (rtaCon > 0) {
                 String SQL_ID = "SELECT LAST_INSERT_ID() AS ID_INSERT";

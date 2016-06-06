@@ -12,6 +12,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 
 /**
@@ -127,6 +129,31 @@ public final class Storages {
             Globales.SUCURSAL_DIR = vector.get("dir_suc").toString();
         } catch (SQLException ex) {
             System.err.println("No se pudo cargar datos de la sucursal");
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean setInfoTerminal(String[] args) {
+        Connection CX = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            CX = DriverManager.getConnection("jdbc:sqlite:Storages.db");
+        } catch (Exception e) {
+            System.err.println("No se pude conectar al repositorio de informacion de terminal\n");
+            return false;
+        }
+        Statement Query;
+        try {
+            Query = CX.createStatement();
+            Query.executeUpdate("UPDATE infoterminal SET sucursal_id='" + args[0] + "', servidor='" + args[1] + "', puerto='" + args[2] + "'");
+        } catch (SQLException ex) {
+            System.err.println("No se actualizo la informacion del terminal");
+            return false;
+        }
+        try {
+            CX.close();
+        } catch (SQLException ex) {
             return false;
         }
         return true;

@@ -14,6 +14,7 @@ public class Globales {
     public static int USER_ID;
     public static String USER_LOGIN;
     public static String USER_ROL;
+    
     public static int PER_ID;
     public static String PER_NOMBRE;
     public static String PER_NID;
@@ -22,7 +23,7 @@ public class Globales {
     
     public static int TERMINAL_ID;
     public static String TERMINAL_SERVER_API;
-    public static int TERMINAL_SERVER_PORT;
+    public static int TERMINAL_SERVER_PORT = 6969;
 
     public static String SUCURSAL_NOMBRE = "";
     public static String SUCURSAL_CIUDAD = "";

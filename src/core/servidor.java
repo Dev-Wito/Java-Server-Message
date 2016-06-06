@@ -6,6 +6,7 @@
 package core;
 
 import config.DataBase;
+import config.Storages;
 import interfaces.login;
 
 /**
@@ -18,6 +19,7 @@ public class servidor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+//        Storages.infoTerminal();
         if (args.length > 0 && args[0].equals("cliente")) {
             login.main(null);
         } else {

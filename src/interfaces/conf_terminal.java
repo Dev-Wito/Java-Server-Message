@@ -23,7 +23,7 @@ public class conf_terminal extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         loadinfo();
     }
-    
+
     protected void loadinfo() {
         Storages.infoTerminal();
         txtCod.setText("" + Globales.TERMINAL_ID);
@@ -54,8 +54,6 @@ public class conf_terminal extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         server_port = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Direccion del Servidor:");
 
@@ -107,6 +105,11 @@ public class conf_terminal extends javax.swing.JFrame {
         );
 
         jButton1.setText("Guardar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         server_port.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
@@ -153,6 +156,21 @@ public class conf_terminal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String args[] = new String[3];
+        args[0] = txtCod.getText();
+        args[1] = servidor_api.getText();
+        args[2] = server_port.getText();
+        if (Storages.setInfoTerminal(args)) {
+            this.setVisible(false);
+        } else {
+            txtCod.setText("");
+            servidor_api.setText("");
+            server_port.setText("");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

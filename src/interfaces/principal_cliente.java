@@ -19,7 +19,9 @@ import org.json.simple.JSONObject;
  * @author rosvel
  */
 public class principal_cliente extends javax.swing.JFrame {
+
     DefaultComboBoxModel miComboAccion, miComboCuentas;
+
     /**
      * Creates new form principal_cliente
      */
@@ -33,6 +35,9 @@ public class principal_cliente extends javax.swing.JFrame {
         jComboBox2.setModel(miComboAccion);
         llenarComboAccion();
         llenarComboCuentas();
+        nom_suc.setText(Globales.SUCURSAL_NOMBRE);
+        ciu_suc.setText(Globales.SUCURSAL_CIUDAD);
+        dir_suc.setText(Globales.SUCURSAL_DIR);
     }
 
     /**
@@ -51,16 +56,22 @@ public class principal_cliente extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        resumen_operacion = new javax.swing.JTextArea();
+        jLabel5 = new javax.swing.JLabel();
+        ciu_suc = new javax.swing.JLabel();
+        nom_suc = new javax.swing.JLabel();
+        dir_suc = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu principal");
+        setResizable(false);
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel1.setText("Cuentas");
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel2.setText("Acción");
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione..." }));
@@ -80,7 +91,7 @@ public class principal_cliente extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultado"));
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Valor");
 
         jTextField1.setEnabled(false);
@@ -93,33 +104,49 @@ public class principal_cliente extends javax.swing.JFrame {
             }
         });
 
+        resumen_operacion.setEditable(false);
+        resumen_operacion.setColumns(20);
+        resumen_operacion.setRows(5);
+        resumen_operacion.setWrapStyleWord(true);
+        resumen_operacion.setEnabled(false);
+        jScrollPane1.setViewportView(resumen_operacion);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTextField1)
+            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1))
         );
+
+        jLabel5.setFont(new java.awt.Font("DejaVu Sans", 1, 24)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("ATM & ATH");
+
+        ciu_suc.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        ciu_suc.setText("{{ciu_suc}}");
+
+        nom_suc.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nom_suc.setText("{{nom_suc}}");
+
+        dir_suc.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        dir_suc.setText("{{dir_suc}}");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -128,34 +155,43 @@ public class principal_cliente extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                        .addGap(92, 92, 92))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(ciu_suc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nom_suc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dir_suc, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nom_suc)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ciu_suc)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dir_suc)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addGap(4, 4, 4)
+                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -164,22 +200,24 @@ public class principal_cliente extends javax.swing.JFrame {
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
         //item_combo item = (item_combo) miComboAccion.getSelectedItem();
         //System.out.println(item.getId()+" => "+item.getLabel());
-        if(jComboBox2.getSelectedIndex() != 0){
+        if (jComboBox2.getSelectedIndex() != 0) {
             item_combo item = (item_combo) miComboAccion.getSelectedItem();
-            if(item.getId() != 0){
+            if (item.getId() != 0) {
                 jTextField1.setEnabled(true);
                 jButton1.setEnabled(true);
+                resumen_operacion.setEnabled(true);
             }
         } else {
             jTextField1.setText("");
-            jLabel4.setText("");
+            resumen_operacion.setText("");
             jTextField1.setEnabled(false);
             jButton1.setEnabled(false);
+            resumen_operacion.setEnabled(false);
         }
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        if(jComboBox1.getSelectedIndex() != 0){
+        if (jComboBox1.getSelectedIndex() != 0) {
             jComboBox2.setEnabled(true);
             jComboBox2.requestFocus();
         } else {
@@ -194,12 +232,17 @@ public class principal_cliente extends javax.swing.JFrame {
         item_combo itemAccion = (item_combo) miComboAccion.getSelectedItem();
         JSONObject Preparar = new JSONObject();
         Preparar.put("API", "setMovimiento");
-        Preparar.put("cuenta_id",itemCuenta.getId());
-        Preparar.put("tipo_movimiento_id",itemAccion.getId());
+        Preparar.put("cuenta_id", itemCuenta.getId());
+        Preparar.put("tipo_movimiento_id", itemAccion.getId());
         Preparar.put("sucursal_id", Globales.TERMINAL_ID);
-        Preparar.put("valor_movimiento", jTextField1.getText());
+        Preparar.put("valor_movimiento", (jTextField1.getText().equals("") ? 0 : jTextField1.getText()));
         String rta = pasarela.call(Preparar);
-        System.out.println(rta);
+        JSONObject vector = json.decode(rta);
+        String print = "Monto del movimiento: " + jTextField1.getText() + "\n"
+                + "Costo del movimiento: " + vector.get("costo_movimiento") + "\n"
+                + "Saldo anterior: " + vector.get("saldo_anterior") + "\n"
+                + "Saldo actual: " + vector.get("saldo_actual");
+        resumen_operacion.setText(print);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -236,8 +279,8 @@ public class principal_cliente extends javax.swing.JFrame {
             }
         });
     }
-    
-    private void llenarComboAccion(){
+
+    private void llenarComboAccion() {
         JSONObject Preparar = new JSONObject();
         Preparar.put("API", "getTipoMovimiento");
         String rta = pasarela.call(Preparar);
@@ -246,13 +289,13 @@ public class principal_cliente extends javax.swing.JFrame {
         JSONArray arreglo = (JSONArray) Preparar.get("movimientos");
         miComboAccion.removeAllElements();
         miComboAccion.addElement(new item_combo(0, "Seleccione..."));
-        for (int i=0; i<arreglo.size(); i++){
+        for (int i = 0; i < arreglo.size(); i++) {
             JSONObject elemento = json.decode(arreglo.get(i).toString());
             miComboAccion.addElement(new item_combo(Integer.parseInt(elemento.get("id").toString()), elemento.get("label").toString()));
         }
     }
-    
-    private void llenarComboCuentas(){
+
+    private void llenarComboCuentas() {
         JSONObject Preparar = new JSONObject();
         Preparar.put("API", "getCuentasUsuario");
         Preparar.put("persona_id", Globales.PER_ID);
@@ -262,21 +305,26 @@ public class principal_cliente extends javax.swing.JFrame {
         JSONArray arreglo = (JSONArray) Preparar.get("cuentas");
         miComboCuentas.removeAllElements();
         miComboCuentas.addElement(new item_combo(0, "Seleccione..."));
-        for (int i=0; i<arreglo.size(); i++){
+        for (int i = 0; i < arreglo.size(); i++) {
             JSONObject elemento = json.decode(arreglo.get(i).toString());
             miComboCuentas.addElement(new item_combo(Integer.parseInt(elemento.get("id").toString()), elemento.get("label").toString()));
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JLabel ciu_suc;
+    public static javax.swing.JLabel dir_suc;
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
+    public static javax.swing.JLabel nom_suc;
+    private javax.swing.JTextArea resumen_operacion;
     // End of variables declaration//GEN-END:variables
 }
