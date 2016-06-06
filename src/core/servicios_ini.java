@@ -93,6 +93,9 @@ public class servicios_ini extends Thread {
             case "getTipoMovimiento":
                 Response = getTipoMovimiento();
                 break;
+            case "getCuentas":
+                Response = getCuentas();
+                break;
             case "setMovimiento":
                 Response = setMovimiento(obj);
                 break;

@@ -5,7 +5,12 @@
  */
 package interfaces;
 
+import config.Storages;
+import core.json;
+import core.pasarela;
 import javax.swing.table.DefaultTableModel;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -17,9 +22,15 @@ public class principal_funcionario extends javax.swing.JFrame {
      * Creates new form principal_funcionario
      */
     public principal_funcionario() {
+        Storages.infoTerminal();
         initComponents();
         tablaCuentas = new DefaultTableModel();
         jTable1.setModel(tablaCuentas);
+        tablaCuentas.addColumn("Cuenta");
+        tablaCuentas.addColumn("Tipo");
+        tablaCuentas.addColumn("Apertura");
+        tablaCuentas.addColumn("Cliente");
+        tablaCuentas.addColumn("Saldo");
         llenarCuentas();
     }
 
@@ -36,6 +47,7 @@ public class principal_funcionario extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton5 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
@@ -80,20 +92,33 @@ public class principal_funcionario extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        jButton5.setText("Actualizar");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Cuentas", jPanel1);
@@ -173,7 +198,7 @@ public class principal_funcionario extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2))
                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(207, Short.MAX_VALUE))
+                .addContainerGap(214, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Cliente", jPanel2);
@@ -244,7 +269,7 @@ public class principal_funcionario extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4))
                     .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(240, Short.MAX_VALUE))
+                .addContainerGap(247, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Cuenta", jPanel3);
@@ -276,7 +301,7 @@ public class principal_funcionario extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -319,6 +344,10 @@ public class principal_funcionario extends javax.swing.JFrame {
         jComboBox1.requestFocus();
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        llenarCuentas();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -355,7 +384,20 @@ public class principal_funcionario extends javax.swing.JFrame {
     }
     
     private void llenarCuentas(){
-        
+        while (tablaCuentas.getRowCount() > 0){
+            tablaCuentas.removeRow(0);
+        }
+        JSONObject Preparar = new JSONObject();
+        Preparar.put("API", "getCuentas");
+        String rta = pasarela.call(Preparar);
+        Preparar.clear();
+        Preparar = json.decode(rta);
+        JSONArray arreglo = (JSONArray) Preparar.get("cuentas");
+        for (int i=0; i<arreglo.size(); i++){
+            JSONObject fila = json.decode(arreglo.get(i).toString());
+            Object[] data = {fila.get("numero_cuenta").toString(),fila.get("nombre_cuenta").toString(),fila.get("fecha_apertura").toString(),fila.get("nombre_persona").toString(),fila.get("saldo").toString()};
+            tablaCuentas.addRow(data);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -363,6 +405,7 @@ public class principal_funcionario extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
