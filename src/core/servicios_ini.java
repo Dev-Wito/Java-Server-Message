@@ -176,7 +176,7 @@ public class servicios_ini extends Thread {
                 vector.put("label", Response.getString("label"));
                 cuentas[v] = json.encode(vector);
             }
-            $rta = "{\"cuentas\":[\"" + String.join("\",\"", cuentas) + "\"]}";
+            $rta = "{\"cuentas\":[" + String.join(",", cuentas) + "]}";
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
