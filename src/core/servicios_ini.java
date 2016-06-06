@@ -55,7 +55,7 @@ public class servicios_ini extends Thread {
         Socket Soquete = null;
         String MSJ;
         try {
-            Cerebellum = new ServerSocket(Globales.TERMINAL_SERVER_PORT);
+            Cerebellum = new ServerSocket(6969);
             System.out.println("Servicios Iniciados");
             while (true) {
                 Soquete = Cerebellum.accept();
