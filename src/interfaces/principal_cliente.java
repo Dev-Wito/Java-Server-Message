@@ -105,7 +105,7 @@ public class principal_cliente extends javax.swing.JFrame {
         });
 
         resumen_operacion.setEditable(false);
-        resumen_operacion.setColumns(20);
+        resumen_operacion.setColumns(5);
         resumen_operacion.setRows(5);
         resumen_operacion.setWrapStyleWord(true);
         resumen_operacion.setEnabled(false);
@@ -198,14 +198,20 @@ public class principal_cliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-        //item_combo item = (item_combo) miComboAccion.getSelectedItem();
-        //System.out.println(item.getId()+" => "+item.getLabel());
+
         if (jComboBox2.getSelectedIndex() != 0) {
             item_combo item = (item_combo) miComboAccion.getSelectedItem();
             if (item.getId() != 0) {
-                jTextField1.setEnabled(true);
+                
                 jButton1.setEnabled(true);
-                resumen_operacion.setEnabled(true);
+resumen_operacion.setEnabled(true);
+                if (item.getLabel().equals("Consulta de Saldo")) {
+                    jTextField1.setText("0");
+                    jTextField1.setEnabled(false);
+                } else {
+                    jTextField1.setEnabled(true);
+                }
+
             }
         } else {
             jTextField1.setText("");
@@ -239,14 +245,15 @@ public class principal_cliente extends javax.swing.JFrame {
         String rta = pasarela.call(Preparar);
         String print;
         JSONObject vector = json.decode(rta);
-        if (vector.get("result").toString().equals("1")) {
+        if (Integer.parseInt(vector.get("result").toString()) == 1) {
+            System.err.println(vector.get("costo_movimiento").toString());
             print = "Monto del movimiento: " + jTextField1.getText() + "\n"
-                    + "Costo del movimiento: " + vector.get("costo_movimiento") + "\n"
-                    + "Saldo anterior: " + vector.get("saldo_anterior") + "\n"
-                    + "Saldo actual: " + vector.get("saldo_actual");
+                    + "Costo del movimiento: " + vector.get("costo_movimiento").toString() + "\n"
+                    + "Saldo anterior: " + vector.get("saldo_anterior").toString() + "\n"
+                    + "Saldo actual: " + vector.get("saldo_actual").toString();
 
         } else {
-            print = vector.get("MSG").toString();
+            print = vector.get("msg").toString();
         }
         resumen_operacion.setText(print);
     }//GEN-LAST:event_jButton1ActionPerformed

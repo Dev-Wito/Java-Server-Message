@@ -227,14 +227,16 @@ public class servicios_ini extends Thread {
             Sentencia.setInt(3, Integer.parseInt(obj.get("sucursal_id").toString()));
             Sentencia.setInt(4, Integer.parseInt(obj.get("valor_movimiento").toString()));
             Sentencia.execute();
-
-            obj.clear();
-            obj.put("result", Sentencia.getInt("result"));
-            obj.put("msg", Sentencia.getString("MSG"));
-            obj.put("saldo_anterior", Sentencia.getInt("saldo_anterior"));
-            obj.put("saldo_actual", Sentencia.getInt("saldo"));
-            obj.put("costo_movimiento", Sentencia.getInt("costo_movimiento"));
-
+            Response = Sentencia.getResultSet();
+            while (Response.next()) {
+                obj.clear();
+                obj.put("result", Response.getInt("result"));
+                obj.put("msg", Response.getString("MSG"));
+                obj.put("saldo_anterior", Response.getInt("saldo_anterior"));
+                obj.put("saldo_actual", Response.getInt("saldo"));
+                obj.put("costo_movimiento", Response.getInt("costo_movimiento"));
+                break;
+            }
             rta = json.encode(obj);
 
         } catch (SQLException ex) {
