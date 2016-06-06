@@ -234,8 +234,14 @@ public class login extends javax.swing.JFrame {
                     Globales.PER_NID = rta2.get("Per_nid").toString();
                     Globales.PER_CORREO = rta2.get("Per_correo").toString();
                     Globales.PER_CEL = rta2.get("Per_cel").toString();
-                    this.setVisible(false);
-                    principal_cliente.main(null);
+                    switch (rta2.get("Usu_rol").toString()){
+                        case "Cliente":
+                            this.setVisible(false);
+                            principal_cliente.main(null);
+                            break;
+                        default:
+                            break;
+                    }
                 } else {
                     jPasswordField1.requestFocus();
                     jLabel3.setText("Contraseña incorrecta");
