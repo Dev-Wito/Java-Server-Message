@@ -24,13 +24,13 @@ import org.json.simple.JSONObject;
  * @author wito
  */
 public class servicios_ini extends Thread {
-    
+
     public static Connection ConectDB;
-    
+
     public servicios_ini(Connection Conexion) {
         servicios_ini.ConectDB = Conexion;
     }
-    
+
     protected ResultSet getQuery(String SQL) {
         ResultSet Response = null;
         Statement Query;
@@ -45,7 +45,7 @@ public class servicios_ini extends Thread {
         }
         return Response;
     }
-    
+
     public void run() {
         BufferedReader Cabezon;
         DataOutputStream alCabezon;
@@ -69,7 +69,7 @@ public class servicios_ini extends Thread {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     protected String service(String solicitud) {
         JSONObject obj = null;
         obj = json.decode(solicitud);
@@ -96,13 +96,13 @@ public class servicios_ini extends Thread {
         }
         return Response;
     }
-    
+
     protected String listarUsuarios() {
         ResultSet Response = null;
         String rta = "";
         Response = getQuery("SELECT usuario FROM usuarios");
         try {
-            
+
             Response.last();
             int cantFilas = Response.getRow();
             Response.beforeFirst();
@@ -114,10 +114,10 @@ public class servicios_ini extends Thread {
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return rta;
     }
-    
+
     protected String autenticar(String Parametros) {
         String rta = "";
         JSONObject Param = json.decode(Parametros);
@@ -142,7 +142,7 @@ public class servicios_ini extends Thread {
         }
         return rta;
     }
-    
+
     protected String getSucursal(String ID) {
         String rta = "";
         JSONObject vector = new JSONObject();
@@ -160,18 +160,21 @@ public class servicios_ini extends Thread {
         }
         return json.encode(vector);
     }
-    
+
     protected String getCuentasUsuario(String $ID) {
         String $rta = "";
         JSONObject vector = new JSONObject();
-        ResultSet Response = this.getQuery("SELECT numero_cuenta FROM cuentas WHERE persona_id='" + $ID + "'");
+        ResultSet Response = this.getQuery("SELECT cuentas.id,CONCAT(\"Cuenta: \",tipo_cuentas.nombre,\" N°:\", cuentas.numero_cuenta) AS label FROM cuentas INNER JOIN tipo_cuentas  ON (cuentas.tipo_cuenta_id = tipo_cuentas.id) WHERE cuentas.persona_id=" + $ID);
         try {
             Response.last();
             int cantFilas = Response.getRow();
             Response.beforeFirst();
             String cuentas[] = new String[cantFilas];
             for (int v = 0; Response.next(); v++) {
-                cuentas[v] = Response.getString("numero_cuenta");
+                vector.clear();
+                vector.put("id", Response.getInt("id"));
+                vector.put("label", Response.getString("label"));
+                cuentas[v] = json.encode(vector);
             }
             $rta = "{\"cuentas\":[\"" + String.join("\",\"", cuentas) + "\"]}";
         } catch (SQLException ex) {
