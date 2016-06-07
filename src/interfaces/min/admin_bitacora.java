@@ -8,6 +8,8 @@ package interfaces.min;
 import config.Storages;
 import core.json;
 import core.pasarela;
+import java.text.NumberFormat;
+import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -290,10 +292,10 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
                 fila.get("tipoCuenta").toString(),
                 fila.get("nomCliente").toString(),
                 fila.get("tipoMovimiento").toString(),
-                fila.get("saldo_anterior").toString(),
-                fila.get("valor_movimiento").toString(),
-                fila.get("costo_movimiento").toString(),
-                fila.get("saldo_restante").toString(),
+                NumberFormat.getNumberInstance(Locale.ITALY).format(Integer.parseInt(fila.get("saldo_anterior").toString())),
+                NumberFormat.getNumberInstance(Locale.ITALY).format(Integer.parseInt(fila.get("valor_movimiento").toString())),
+                NumberFormat.getNumberInstance(Locale.ITALY).format(Integer.parseInt(fila.get("costo_movimiento").toString())),
+                NumberFormat.getNumberInstance(Locale.ITALY).format(Integer.parseInt(fila.get("saldo_restante").toString())),
                 fila.get("fecha").toString(),
                 fila.get("sucursal").toString(),
                 fila.get("ciudad").toString()
