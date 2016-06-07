@@ -179,7 +179,7 @@ public class principal_admin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JDesktopPane contentPanel;
+    public static javax.swing.JDesktopPane contentPanel;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;

@@ -59,7 +59,7 @@ public class servicios_ini extends Thread {
             System.out.println("Servicios Iniciados");
             while (true) {
                 Soquete = Cerebellum.accept();
-                System.out.println("Procesando solicitud PID: "+Math.round(Math.random()*10000));
+                System.out.println("Procesando solicitud PID: " + Math.round(Math.random() * 10000));
                 Cabezon = new BufferedReader(new InputStreamReader(Soquete.getInputStream()));
                 alCabezon = new DataOutputStream(Soquete.getOutputStream());
                 MSJ = Cabezon.readLine();
@@ -110,6 +110,18 @@ public class servicios_ini extends Thread {
                 break;
             case "setCuenta":
                 Response = setCuenta(obj);
+                break;
+            case "getAllUsuarios":
+                Response = getAllUsuarios(obj.get("Search").toString());
+                break;
+            case "setUsuario":
+                Response = setUsuario(obj);
+                break;
+            case "dropUser":
+                Response = dropUser(obj.get("id").toString());
+                break;
+            case "getBitacora":
+                Response = getBitacora(obj.get("id").toString());
                 break;
             default:
                 obj.clear();
@@ -256,8 +268,8 @@ public class servicios_ini extends Thread {
         }
         return rta;
     }
-    
-    protected String getCuentas(){
+
+    protected String getCuentas() {
         String $rta = "";
         JSONObject vector = new JSONObject();
         ResultSet Response = this.getQuery("SELECT cuentas.numero_cuenta, tipo_cuentas.nombre AS nombre_cuenta, DATE_FORMAT(cuentas.fecha_apertura,\"%d-%m-%Y\") AS fecha_apertura, personas.nombres AS nombre_persona, cuentas.saldo FROM cuentas INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) INNER JOIN personas ON (personas.id=cuentas.persona_id)");
@@ -281,7 +293,7 @@ public class servicios_ini extends Thread {
         }
         return $rta;
     }
-    
+
     protected String setCliente(JSONObject obj) {
         String rta = "fail";
         PreparedStatement SentenciaPersonas = null, SentenciaUsuarios = null;
@@ -299,20 +311,20 @@ public class servicios_ini extends Thread {
             keys.first();
             idPersona = keys.getInt(1);
             keys.close();
-            
+
             SentenciaUsuarios = ConectDB.prepareStatement(sql2);
             SentenciaUsuarios.setInt(1, idPersona);
             SentenciaUsuarios.setString(2, obj.get("usuario").toString());
             SentenciaUsuarios.setString(3, obj.get("usuario").toString());
             SentenciaUsuarios.executeUpdate();
-            
+
             rta = "success";
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rta;
     }
-    
+
     protected String getTiposCuentas() {
         String $rta = "";
         JSONObject vector = new JSONObject();
@@ -334,7 +346,7 @@ public class servicios_ini extends Thread {
         }
         return $rta;
     }
-    
+
     protected String getClientes() {
         String $rta = "";
         JSONObject vector = new JSONObject();
@@ -356,8 +368,8 @@ public class servicios_ini extends Thread {
         }
         return $rta;
     }
-    
-    protected String setCuenta(JSONObject obj){
+
+    protected String setCuenta(JSONObject obj) {
         String rta = "fail";
         PreparedStatement SentenciaCuentas = null;
         String sql = "INSERT INTO cuentas (persona_id, tipo_cuenta_id, sucursal_id, saldo) VALUES (?,?,?,?)";
@@ -368,11 +380,111 @@ public class servicios_ini extends Thread {
             SentenciaCuentas.setInt(3, Integer.parseInt(obj.get("sucursal_id").toString()));
             SentenciaCuentas.setInt(4, Integer.parseInt(obj.get("saldo_ini").toString()));
             SentenciaCuentas.executeUpdate();
-            
+
             rta = "success";
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rta;
+    }
+
+    protected String getAllUsuarios(String Search) {
+        String rta = "";
+        JSONObject vector = new JSONObject();
+        String SQL = "SELECT usuarios.id , personas.num_ident , personas.nombres , personas.correo, personas.celular, usuarios.usuario , usuarios.rol FROM usuarios INNER JOIN personas  ON (usuarios.persona_id = personas.id)";
+        if (!Search.equals("")) {
+            SQL = SQL + " WHERE num_ident LIKE '%" + Search + "%' OR usuario LIKE '%" + Search + "%' OR nombres LIKE '%" + Search + "%' OR rol LIKE '%" + Search + "%'";
+        }
+        ResultSet Response = this.getQuery(SQL);
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String usuarios[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("id", Response.getInt("id"));
+                vector.put("nuid", Response.getString("num_ident"));
+                vector.put("nom", Response.getString("nombres"));
+                vector.put("cor", Response.getString("correo"));
+                vector.put("cel", Response.getString("celular"));
+                vector.put("usu", Response.getString("usuario"));
+                vector.put("rol", Response.getString("rol"));
+
+                usuarios[v] = json.encode(vector);
+            }
+            rta = "{\"usuarios\":[" + String.join(",", usuarios) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
+    }
+
+    protected String setUsuario(JSONObject obj) {
+        String rta = "";
+        ResultSet Response;
+        String SQL_Insert = "CALL SP_REGISTRAR_USUARIO(?,?,?,?,?,?,?,?)";
+        try {
+            CallableStatement Sentencia = ConectDB.prepareCall(SQL_Insert);
+            Sentencia.setInt(1, Integer.parseInt(obj.get("id").toString()));
+            Sentencia.setString(2, obj.get("usu").toString());
+            Sentencia.setString(3, obj.get("key").toString());
+            Sentencia.setString(4, obj.get("rol").toString());
+            Sentencia.setString(5, obj.get("nuid").toString());
+            Sentencia.setString(6, obj.get("nom").toString());
+            Sentencia.setString(7, obj.get("cor").toString());
+            Sentencia.setString(8, obj.get("cel").toString());
+            Sentencia.execute();
+            Response = Sentencia.getResultSet();
+            while (Response.next()) {
+                obj.clear();
+                obj.put("msg", Response.getString("msg"));
+                break;
+            }
+            rta = json.encode(obj);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
+    }
+
+    protected String dropUser(String id) {
+        String rta = "{\"msg\":\"Fallo la eliminacion\"}";
+        PreparedStatement SentenciaCuentas = null;
+        String sql = "DELETE FROM personas WHERE id=(SELECT persona_id FROM usuarios WHERE usuarios.id=? LIMIT 1)";
+        try {
+            SentenciaCuentas = ConectDB.prepareStatement(sql);
+            SentenciaCuentas.setInt(1, Integer.parseInt(id));
+            SentenciaCuentas.executeUpdate();
+            rta = "{\"msg\":\"Se elimino correctamente\"}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
+    }
+
+    protected String getBitacora(String id) {
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT usuarios.usuario , bitacora.id , bitacora.accion , bitacora.fecha FROM bitacora INNER JOIN usuarios  ON (bitacora.usuario_id = usuarios.id) WHERE bitacora.usuario_id=" + id);
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String clientes[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("id", Response.getInt("id"));
+                vector.put("usuario", Response.getString("usuario"));
+                vector.put("accion", Response.getString("accion"));
+                vector.put("fecha", Response.getString("fecha"));
+                clientes[v] = json.encode(vector);
+            }
+            $rta = "{\"acciones\":[" + String.join(",", clientes) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return $rta;
     }
 }
