@@ -55,6 +55,8 @@ public class conf_terminal extends javax.swing.JFrame {
         server_port = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
 
+        setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+
         jLabel1.setText("Direccion del Servidor:");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos de Sucursal"));

@@ -5,6 +5,9 @@
  */
 package interfaces;
 
+import interfaces.min.adm_usuarios;
+import javax.swing.JInternalFrame;
+
 /**
  *
  * @author wito
@@ -14,8 +17,23 @@ public class principal_admin extends javax.swing.JFrame {
     /**
      * Creates new form principal_admin
      */
+    adm_usuarios admUsu = new adm_usuarios();
+
     public principal_admin() {
         initComponents();
+        this.setLocationRelativeTo(null);
+    }
+
+    private boolean Ocultar(String Title) {
+        JInternalFrame[] Arr = contentPanel.getAllFrames();
+        boolean response = false;
+        for (JInternalFrame Arr1 : Arr) {
+            Arr1.setVisible(false);
+            if (Arr1.getTitle().equals(Title)) {
+                response = true;
+            }
+        }
+        return response;
     }
 
     /**
@@ -27,51 +45,71 @@ public class principal_admin extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenu3 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
         contentPanel = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        jMenu7 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
-        jMenu6 = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
+
+        jMenu3.setText("File");
+        jMenuBar2.add(jMenu3);
+
+        jMenu4.setText("Edit");
+        jMenuBar2.add(jMenu4);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Administracion del sistema");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
         contentPanelLayout.setHorizontalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 422, Short.MAX_VALUE)
+            .addGap(0, 863, Short.MAX_VALUE)
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 277, Short.MAX_VALUE)
+            .addGap(0, 367, Short.MAX_VALUE)
         );
 
-        jMenu1.setText("Administrar");
+        jMenu5.setText("Administrar");
 
-        jMenu3.setText("Usuarios");
-        jMenu1.add(jMenu3);
-        jMenu1.add(jSeparator1);
+        jMenuItem6.setText("Usuarios");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem6);
+        jMenu5.add(jSeparator3);
 
-        jMenu7.setText("Salir");
-        jMenu1.add(jMenu7);
+        jMenuItem7.setText("Salir");
+        jMenu5.add(jMenuItem7);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(jMenu5);
 
         jMenu2.setText("Maestras");
 
-        jMenu4.setText("Sucursales");
-        jMenu2.add(jMenu4);
+        jMenuItem3.setText("Tipos de cuenta");
+        jMenu2.add(jMenuItem3);
 
-        jMenu5.setText("Tipos de Cuenta");
-        jMenu2.add(jMenu5);
+        jMenuItem4.setText("Sucursales");
+        jMenu2.add(jMenuItem4);
 
-        jMenu6.setText("Costo de Movimientos");
-        jMenu2.add(jMenu6);
+        jMenuItem5.setText("Costos por movimiento");
+        jMenu2.add(jMenuItem5);
 
         jMenuBar1.add(jMenu2);
 
@@ -90,6 +128,20 @@ public class principal_admin extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        this.setExtendedState(this.MAXIMIZED_BOTH);
+    }//GEN-LAST:event_formWindowOpened
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        // TODO add your handling code here:
+        if (!Ocultar(admUsu.getTitle())) {
+            contentPanel.add(admUsu);
+        }
+        admUsu.setVisible(true);
+        admUsu.requestFocus();
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -128,14 +180,17 @@ public class principal_admin extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JDesktopPane contentPanel;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
     // End of variables declaration//GEN-END:variables
 }
