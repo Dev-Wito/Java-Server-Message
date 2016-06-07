@@ -96,6 +96,12 @@ public class servicios_ini extends Thread {
             case "getCuentas":
                 Response = getCuentas();
                 break;
+            case "getTiposCuentas":
+                Response = getTiposCuentas();
+                break;
+            case "getClientes":
+                Response = getClientes();
+                break;
             case "setMovimiento":
                 Response = setMovimiento(obj);
                 break;
@@ -302,5 +308,49 @@ public class servicios_ini extends Thread {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rta;
+    }
+    
+    protected String getTiposCuentas() {
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT id, nombre AS label FROM tipo_cuentas");
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String tipoCuentas[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("id", Response.getInt("id"));
+                vector.put("label", Response.getString("label"));
+                tipoCuentas[v] = json.encode(vector);
+            }
+            $rta = "{\"tiposCuentas\":[" + String.join(",", tipoCuentas) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return $rta;
+    }
+    
+    protected String getClientes() {
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT personas.id, CONCAT_WS(' - ',personas.num_ident, personas.nombres) AS label FROM personas INNER JOIN usuarios ON (usuarios.persona_id=personas.id) WHERE usuarios.rol='Cliente'");
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String clientes[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("id", Response.getInt("id"));
+                vector.put("label", Response.getString("label"));
+                clientes[v] = json.encode(vector);
+            }
+            $rta = "{\"clientes\":[" + String.join(",", clientes) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return $rta;
     }
 }

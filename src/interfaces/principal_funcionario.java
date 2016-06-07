@@ -5,9 +5,12 @@
  */
 package interfaces;
 
+import config.Globales;
 import config.Storages;
+import core.item_combo;
 import core.json;
 import core.pasarela;
+import java.awt.event.KeyEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 import org.json.simple.JSONArray;
@@ -26,6 +29,8 @@ public class principal_funcionario extends javax.swing.JFrame {
     public principal_funcionario() {
         Storages.infoTerminal();
         initComponents();
+        setLocationRelativeTo(null);
+        jTextField8.setText(Globales.SUCURSAL_NOMBRE+" ("+Globales.SUCURSAL_CIUDAD+")");
         tablaCuentas = new DefaultTableModel();
         jTable1.setModel(tablaCuentas);
         tablaCuentas.addColumn("Cuenta");
@@ -34,6 +39,12 @@ public class principal_funcionario extends javax.swing.JFrame {
         tablaCuentas.addColumn("Cliente");
         tablaCuentas.addColumn("Saldo");
         llenarCuentas();
+        tipoCuentas = new DefaultComboBoxModel();
+        clientes = new DefaultComboBoxModel();
+        jComboBox1.setModel(tipoCuentas);
+        jComboBox2.setModel(clientes);
+        llenarTiposCuentas();
+        llenarClientes();
     }
 
     /**
@@ -74,6 +85,10 @@ public class principal_funcionario extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jTextField7 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jTextField8 = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -228,14 +243,30 @@ public class principal_funcionario extends javax.swing.JFrame {
         jLabel5.setText("Tipo cuenta");
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione..." }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel7.setText("Numero cuenta");
+
+        jTextField5.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField5KeyReleased(evt);
+            }
+        });
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel8.setText("Cliente");
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione..." }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Agregar");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -251,24 +282,41 @@ public class principal_funcionario extends javax.swing.JFrame {
             }
         });
 
+        jLabel11.setText("Saldo inicial");
+
+        jTextField7.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField7KeyReleased(evt);
+            }
+        });
+
+        jLabel12.setText("Sucursal");
+
+        jTextField8.setEnabled(false);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel11)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jComboBox1, 0, 385, Short.MAX_VALUE)
                     .addComponent(jTextField5)
                     .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextField7)
+                    .addComponent(jTextField8))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -286,14 +334,22 @@ public class principal_funcionario extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4))
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(247, Short.MAX_VALUE))
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(159, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Cuenta", jPanel3);
@@ -389,7 +445,7 @@ public class principal_funcionario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if(jComboBox1.getSelectedIndex()!=0 && jTextField5.getText().length()>0 && jComboBox2.getSelectedIndex()!=0){
+        if(jComboBox1.getSelectedIndex()!=0 && jTextField5.getText().length()>0 && jComboBox2.getSelectedIndex()!=0 && jTextField7.getText().length()>0){
             guardarCuenta();
             jComboBox1.setSelectedIndex(0);
             jTextField5.setText("");
@@ -400,6 +456,42 @@ public class principal_funcionario extends javax.swing.JFrame {
             jComboBox1.requestFocus();
         }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        if(jComboBox1.getSelectedIndex() != 0){
+            jTextField5.requestFocus();
+        } else {
+            jComboBox1.requestFocus();
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jTextField5KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField5KeyReleased
+        if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+            if(jTextField5.getText().length() > 0){
+                jComboBox2.requestFocus();
+            } else {
+                jTextField5.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_jTextField5KeyReleased
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        if(jComboBox2.getSelectedIndex() != 0){
+            jTextField7.requestFocus();
+        } else {
+            jComboBox2.requestFocus();
+        }
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jTextField7KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField7KeyReleased
+        if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+            if(jTextField7.getText().length() > 0){
+                jButton3.requestFocus();
+            } else {
+                jTextField7.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_jTextField7KeyReleased
 
     /**
      * @param args the command line arguments
@@ -454,11 +546,33 @@ public class principal_funcionario extends javax.swing.JFrame {
     }
     
     private void llenarTiposCuentas(){
-    
+        JSONObject Preparar = new JSONObject();
+        Preparar.put("API", "getTiposCuentas");
+        String rta = pasarela.call(Preparar);
+        Preparar.clear();
+        Preparar = json.decode(rta);
+        JSONArray arreglo = (JSONArray) Preparar.get("tiposCuentas");
+        tipoCuentas.removeAllElements();
+        tipoCuentas.addElement(new item_combo(0, "Seleccione..."));
+        for (int i = 0; i < arreglo.size(); i++) {
+            JSONObject elemento = json.decode(arreglo.get(i).toString());
+            tipoCuentas.addElement(new item_combo(Integer.parseInt(elemento.get("id").toString()), elemento.get("label").toString()));
+        }
     }
     
     private void llenarClientes(){
-    
+        JSONObject Preparar = new JSONObject();
+        Preparar.put("API", "getClientes");
+        String rta = pasarela.call(Preparar);
+        Preparar.clear();
+        Preparar = json.decode(rta);
+        JSONArray arreglo = (JSONArray) Preparar.get("clientes");
+        clientes.removeAllElements();
+        clientes.addElement(new item_combo(0, "Seleccione..."));
+        for (int i = 0; i < arreglo.size(); i++) {
+            JSONObject elemento = json.decode(arreglo.get(i).toString());
+            clientes.addElement(new item_combo(Integer.parseInt(elemento.get("id").toString()), elemento.get("label").toString()));
+        }
     }
     
     private void guardarCliente(){
@@ -489,6 +603,8 @@ public class principal_funcionario extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -512,5 +628,7 @@ public class principal_funcionario extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField jTextField8;
     // End of variables declaration//GEN-END:variables
 }
