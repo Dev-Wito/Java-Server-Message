@@ -129,6 +129,9 @@ public class servicios_ini extends Thread {
             case "getBitSesiones":
                 Response = getBitSesiones();
                 break;
+            case "getBitMovimientos":
+                Response = getBitMovimientos();
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -538,6 +541,45 @@ public class servicios_ini extends Thread {
                 sesiones[v] = json.encode(vector);
             }
             rta = "{\"sesiones\":[" + String.join(",", sesiones) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
+    }
+    
+    protected String getBitMovimientos(){
+        String rta="";
+        String sql="SELECT cuentas.numero_cuenta AS numCuenta, tipo_cuentas.nombre AS tipoCuenta, personas.nombres AS nomCliente, tipo_movimientos.nombre AS tipoMovimiento, IF(movimientos.saldo_anterior IS NULL, '', movimientos.saldo_anterior) AS saldo_anterior, IF(movimientos.valor_movimiento IS NULL, '', movimientos.valor_movimiento) AS valor_movimiento, IF(movimientos.costo_movimiento IS NULL, '', movimientos.costo_movimiento) AS costo_movimiento, IF(movimientos.saldo IS NULL, '', movimientos.saldo) AS saldo_restante, DATE_FORMAT(movimientos.fecha_movimiento, '%d-%m-%Y %h:%i %p') AS fecha, sucursales.nombre AS sucursal, sucursales.ciudad "
+                + "FROM movimientos "
+                + "INNER JOIN cuentas ON (cuentas.id=movimientos.cuenta_id) "
+                + "INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) "
+                + "INNER JOIN personas ON (personas.id=cuentas.persona_id) "
+                + "INNER JOIN tipo_movimientos ON (tipo_movimientos.id=movimientos.tipo_movimiento_id) "
+                + "INNER JOIN sucursales ON (sucursales.id=movimientos.sucursal_id) "
+                + "ORDER BY movimientos.fecha_movimiento DESC";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery(sql);
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String movimientos[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("numCuenta", Response.getString("numCuenta"));
+                vector.put("tipoCuenta", Response.getString("tipoCuenta"));
+                vector.put("nomCliente", Response.getString("nomCliente"));
+                vector.put("tipoMovimiento", Response.getString("tipoMovimiento"));
+                vector.put("saldo_anterior", Response.getString("saldo_anterior"));
+                vector.put("valor_movimiento", Response.getString("valor_movimiento"));
+                vector.put("costo_movimiento", Response.getString("costo_movimiento"));
+                vector.put("saldo_restante", Response.getString("saldo_restante"));
+                vector.put("fecha", Response.getString("fecha"));
+                vector.put("sucursal", Response.getString("sucursal"));
+                vector.put("ciudad", Response.getString("ciudad"));
+                movimientos[v] = json.encode(vector);
+            }
+            rta = "{\"movimientos\":[" + String.join(",", movimientos) + "]}";
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }

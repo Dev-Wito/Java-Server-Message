@@ -17,7 +17,7 @@ import org.json.simple.JSONObject;
  * @author wito
  */
 public class admin_bitacora extends javax.swing.JInternalFrame {
-    DefaultTableModel tablaSesiones;
+    DefaultTableModel tablaSesiones, tablaMovimientos;
     /**
      * Creates new form admin_bitacora
      */
@@ -35,6 +35,20 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         tablaSesiones.addColumn("H. Inicio");
         tablaSesiones.addColumn("H. Fin");
         llenarTablaSesiones();
+        tablaMovimientos = new DefaultTableModel();
+        jTable2.setModel(tablaMovimientos);
+        tablaMovimientos.addColumn("Cuenta");
+        tablaMovimientos.addColumn("Tipo");
+        tablaMovimientos.addColumn("Cliente");
+        tablaMovimientos.addColumn("Movimiento");
+        tablaMovimientos.addColumn("S. Anterior");
+        tablaMovimientos.addColumn("Valor M.");
+        tablaMovimientos.addColumn("Costo M.");
+        tablaMovimientos.addColumn("Saldo");
+        tablaMovimientos.addColumn("Fecha");
+        tablaMovimientos.addColumn("Sucursal");
+        tablaMovimientos.addColumn("Ciudad");
+        llenarTablaMovimientos();
     }
     
 //    public void LimpiarTabla1() {
@@ -85,12 +99,17 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        jButton3 = new javax.swing.JButton();
 
         jMenu1.setText("jMenu1");
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setMaximizable(true);
         setTitle("Bitacora");
         setVisible(true);
 
@@ -121,7 +140,7 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 957, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1068, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -139,28 +158,68 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Sesiones", jPanel1);
 
+        jButton2.setText("Actualizar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable2);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 981, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1068, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 540, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Movimientos", jPanel2);
+
+        jButton3.setText("Actualizar");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 981, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(950, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 540, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(499, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Edición de usuarios", jPanel3);
@@ -182,6 +241,10 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         llenarTablaSesiones();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        llenarTablaMovimientos();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     
     private void llenarTablaSesiones(){
@@ -209,15 +272,48 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
             tablaSesiones.addRow(data);
         }
     }
+    
+    private void llenarTablaMovimientos(){
+        while (tablaMovimientos.getRowCount() > 0){
+            tablaMovimientos.removeRow(0);
+        }
+        JSONObject Preparar = new JSONObject();
+        Preparar.put("API", "getBitMovimientos");
+        String rta = pasarela.call(Preparar);
+        Preparar.clear();
+        Preparar = json.decode(rta);
+        JSONArray arreglo = (JSONArray) Preparar.get("movimientos");
+        for (int i=0; i<arreglo.size(); i++){
+            JSONObject fila = json.decode(arreglo.get(i).toString());
+            Object[] data = {
+                fila.get("numCuenta").toString(),
+                fila.get("tipoCuenta").toString(),
+                fila.get("nomCliente").toString(),
+                fila.get("tipoMovimiento").toString(),
+                fila.get("saldo_anterior").toString(),
+                fila.get("valor_movimiento").toString(),
+                fila.get("costo_movimiento").toString(),
+                fila.get("saldo_restante").toString(),
+                fila.get("fecha").toString(),
+                fila.get("sucursal").toString(),
+                fila.get("ciudad").toString()
+            };
+            tablaMovimientos.addRow(data);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 }

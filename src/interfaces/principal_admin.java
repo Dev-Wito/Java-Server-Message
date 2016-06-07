@@ -9,6 +9,9 @@ import config.Globales;
 import core.pasarela;
 import interfaces.min.adm_usuarios;
 import interfaces.min.admin_bitacora;
+import java.beans.PropertyVetoException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import org.json.simple.JSONObject;
 
@@ -186,6 +189,10 @@ public class principal_admin extends javax.swing.JFrame {
             contentPanel.add(admBit);
         }
         admBit.setVisible(true);
+        try {
+            admBit.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+        }
         admBit.requestFocus();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
