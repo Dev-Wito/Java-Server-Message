@@ -132,6 +132,9 @@ public class servicios_ini extends Thread {
             case "getBitMovimientos":
                 Response = getBitMovimientos(obj);
                 break;
+            case "setPasswd":
+                Response = setPasswd(obj);
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -596,6 +599,34 @@ public class servicios_ini extends Thread {
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return rta;
+    }
+    
+    protected String setPasswd(JSONObject obj){
+        String rta="fail";
+        
+        try {
+            String sql = "SELECT IF(PASSWORD('"+obj.get("antigua").toString()+"')=(SELECT llave FROM usuarios WHERE usuarios.id='"+obj.get("idUser").toString()+"'),'success','fail') AS rta";
+            Statement sentencia;
+            sentencia = ConectDB.createStatement();
+            ResultSet query = sentencia.executeQuery(sql);
+            query.first();
+            if(query.getString("rta").equals("success")){
+                String sql2 = "UPDATE usuarios SET llave = PASSWORD(?) WHERE usuarios.id=?";
+                PreparedStatement sentencia2 = ConectDB.prepareStatement(sql2);
+                sentencia2.setString(1, obj.get("nueva").toString());
+                sentencia2.setString(2, obj.get("idUser").toString());
+                sentencia2.executeUpdate();
+                rta = "success";
+            } else {
+                rta = "error";
+            }
+            query.close();
+            sentencia.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         return rta;
     }
 }
