@@ -5,8 +5,11 @@
  */
 package interfaces;
 
+import config.Globales;
+import core.pasarela;
 import interfaces.min.adm_usuarios;
 import javax.swing.JInternalFrame;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -71,6 +74,9 @@ public class principal_admin extends javax.swing.JFrame {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
         });
 
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
@@ -96,6 +102,11 @@ public class principal_admin extends javax.swing.JFrame {
         jMenu5.add(jSeparator3);
 
         jMenuItem7.setText("Salir");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu5.add(jMenuItem7);
 
         jMenuBar1.add(jMenu5);
@@ -143,6 +154,22 @@ public class principal_admin extends javax.swing.JFrame {
         admUsu.requestFocus();
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        JSONObject Preparar = new JSONObject();
+        Preparar.put("API", "setBitacoraFinSesion");
+        Preparar.put("idSesion", Globales.BITACORA_SESION_ID);
+        String rta = pasarela.call(Preparar);
+        this.setVisible(false);
+        login.main(null);
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        JSONObject Preparar = new JSONObject();
+        Preparar.put("API", "setBitacoraFinSesion");
+        Preparar.put("idSesion", Globales.BITACORA_SESION_ID);
+        String rta = pasarela.call(Preparar);
+    }//GEN-LAST:event_formWindowClosing
+
     /**
      * @param args the command line arguments
      */
@@ -177,7 +204,7 @@ public class principal_admin extends javax.swing.JFrame {
             }
         });
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JDesktopPane contentPanel;
     private javax.swing.JMenu jMenu2;

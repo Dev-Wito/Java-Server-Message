@@ -120,8 +120,11 @@ public class servicios_ini extends Thread {
             case "dropUser":
                 Response = dropUser(obj.get("id").toString());
                 break;
-            case "getBitacora":
-                Response = getBitacora(obj.get("id").toString());
+            case "setBitacoraSesion":
+                Response = setBitacoraSesion(obj);
+                break;
+            case "setBitacoraFinSesion":
+                Response = setBitacoraFinSesion(obj);
                 break;
             default:
                 obj.clear();
@@ -464,27 +467,42 @@ public class servicios_ini extends Thread {
         return rta;
     }
 
-    protected String getBitacora(String id) {
-        String $rta = "";
-        JSONObject vector = new JSONObject();
-        ResultSet Response = this.getQuery("SELECT usuarios.usuario , bitacora.id , bitacora.accion , bitacora.fecha FROM bitacora INNER JOIN usuarios  ON (bitacora.usuario_id = usuarios.id) WHERE bitacora.usuario_id=" + id);
+    protected String setBitacoraSesion(JSONObject obj){
+    String rta="";
+    PreparedStatement SentenciaBitacora = null;
+        String sql = "INSERT INTO bitacora_sesion (usuario_id, sucursal_id, inicio) VALUES (?, ?, CURRENT_TIMESTAMP())";
         try {
-            Response.last();
-            int cantFilas = Response.getRow();
-            Response.beforeFirst();
-            String clientes[] = new String[cantFilas];
-            for (int v = 0; Response.next(); v++) {
-                vector.clear();
-                vector.put("id", Response.getInt("id"));
-                vector.put("usuario", Response.getString("usuario"));
-                vector.put("accion", Response.getString("accion"));
-                vector.put("fecha", Response.getString("fecha"));
-                clientes[v] = json.encode(vector);
-            }
-            $rta = "{\"acciones\":[" + String.join(",", clientes) + "]}";
+            SentenciaBitacora = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            SentenciaBitacora.setInt(1, Integer.parseInt(obj.get("usuario_id").toString()));
+            SentenciaBitacora.setInt(2, Integer.parseInt(obj.get("sucursal_id").toString()));
+            SentenciaBitacora.executeUpdate();
+            
+            int idSesion;
+            ResultSet keys = SentenciaBitacora.getGeneratedKeys();
+            keys.first();
+            idSesion = keys.getInt(1);
+            keys.close();
+
+            rta += idSesion;
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return $rta;
+        return rta;
+    }
+    
+    protected String setBitacoraFinSesion(JSONObject obj){
+    String rta="fail";
+    PreparedStatement SentenciaBitacora = null;
+        String sql = "UPDATE bitacora_sesion SET fin = CURRENT_TIMESTAMP() WHERE id = ?";
+        try {
+            SentenciaBitacora = ConectDB.prepareStatement(sql);
+            SentenciaBitacora.setInt(1, Integer.parseInt(obj.get("idSesion").toString()));
+            SentenciaBitacora.executeUpdate();
+            
+            rta = "success";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
     }
 }

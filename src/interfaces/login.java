@@ -248,6 +248,14 @@ public class login extends javax.swing.JFrame {
                     Globales.PER_NID = rta2.get("Per_nid").toString();
                     Globales.PER_CORREO = rta2.get("Per_correo").toString();
                     Globales.PER_CEL = rta2.get("Per_cel").toString();
+                    
+                    JSONObject PrepBitacora = new JSONObject();
+                    PrepBitacora.put("API", "setBitacoraSesion");
+                    PrepBitacora.put("usuario_id", Integer.parseInt(rta2.get("Usu_id").toString()));
+                    PrepBitacora.put("sucursal_id", Globales.TERMINAL_ID);
+                    String idSesion = pasarela.call(PrepBitacora);
+                    Globales.BITACORA_SESION_ID = Integer.parseInt(idSesion);
+                    
                     switch (rta2.get("Usu_rol").toString()) {
                         case "Cliente":
                             this.setVisible(false);

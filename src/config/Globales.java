@@ -28,5 +28,6 @@ public class Globales {
     public static String SUCURSAL_NOMBRE = "";
     public static String SUCURSAL_CIUDAD = "";
     public static String SUCURSAL_DIR = "";
+    public static int BITACORA_SESION_ID;
 
 }
