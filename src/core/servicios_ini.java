@@ -59,7 +59,7 @@ public class servicios_ini extends Thread {
             System.out.println("Servicios Iniciados");
             while (true) {
                 Soquete = Cerebellum.accept();
-                System.out.println("Procesando solicitud...");
+                System.out.println("Procesando solicitud PID: "+Math.round(Math.random()*10000));
                 Cabezon = new BufferedReader(new InputStreamReader(Soquete.getInputStream()));
                 alCabezon = new DataOutputStream(Soquete.getOutputStream());
                 MSJ = Cabezon.readLine();
