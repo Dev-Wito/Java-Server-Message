@@ -108,6 +108,9 @@ public class servicios_ini extends Thread {
             case "setCliente":
                 Response = setCliente(obj);
                 break;
+            case "setCuenta":
+                Response = setCuenta(obj);
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -352,5 +355,25 @@ public class servicios_ini extends Thread {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
         return $rta;
+    }
+    
+    protected String setCuenta(JSONObject obj){
+        String rta = "fail";
+        PreparedStatement SentenciaCuentas = null;
+        String sql = "INSERT INTO cuentas (persona_id, tipo_cuenta_id, sucursal_id, numero_cuenta, saldo) VALUES (?,?,?,?,?)";
+        try {
+            SentenciaCuentas = ConectDB.prepareStatement(sql);
+            SentenciaCuentas.setInt(1, Integer.parseInt(obj.get("cliente_id").toString()));
+            SentenciaCuentas.setInt(2, Integer.parseInt(obj.get("tipo_cuenta_id").toString()));
+            SentenciaCuentas.setInt(3, Integer.parseInt(obj.get("sucursal_id").toString()));
+            SentenciaCuentas.setString(4, obj.get("num_cuenta").toString());
+            SentenciaCuentas.setInt(5, Integer.parseInt(obj.get("saldo_ini").toString()));
+            SentenciaCuentas.executeUpdate();
+            
+            rta = "success";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
     }
 }

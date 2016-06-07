@@ -420,8 +420,10 @@ public class principal_funcionario extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         jComboBox1.setSelectedIndex(0);
         jTextField5.setText("");
-        jComboBox2.setSelectedIndex(0);// Actualizar lista de clientes
+        jComboBox2.setSelectedIndex(0);
+        jTextField7.setText("");
         jLabel9.setText("");
+        llenarClientes();
         jComboBox1.requestFocus();
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -450,6 +452,7 @@ public class principal_funcionario extends javax.swing.JFrame {
             jComboBox1.setSelectedIndex(0);
             jTextField5.setText("");
             jComboBox2.setSelectedIndex(0);
+            jTextField7.setText("");
             jComboBox1.requestFocus();
         } else {
             jLabel9.setText("No deben haber campos vacios o sin seleccionar");
@@ -458,6 +461,7 @@ public class principal_funcionario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        jLabel9.setText("");
         if(jComboBox1.getSelectedIndex() != 0){
             jTextField5.requestFocus();
         } else {
@@ -590,7 +594,19 @@ public class principal_funcionario extends javax.swing.JFrame {
     }
     
     private void guardarCuenta(){
-        
+        JSONObject Preparar = new JSONObject();
+        item_combo itemTipoCuenta = (item_combo) tipoCuentas.getSelectedItem();
+        item_combo itemCliente = (item_combo) clientes.getSelectedItem();
+        Preparar.put("API", "setCuenta");
+        Preparar.put("tipo_cuenta_id",itemTipoCuenta.getId());
+        Preparar.put("num_cuenta", jTextField5.getText());
+        Preparar.put("cliente_id", itemCliente.getId());
+        Preparar.put("saldo_ini", jTextField7.getText());
+        Preparar.put("sucursal_id", Globales.TERMINAL_ID);
+        String rta = pasarela.call(Preparar);
+        if(rta.equals("success")){
+            jLabel9.setText("Cuenta almacenada con exito");
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
