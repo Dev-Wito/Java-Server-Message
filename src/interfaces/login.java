@@ -145,7 +145,7 @@ public class login extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         jLabel3.setText("");
-        if(jComboBox1.getSelectedIndex() != 0){
+        if (jComboBox1.getSelectedIndex() != 0) {
             jButton1.setEnabled(true);
             jPasswordField1.setText("");
             jPasswordField1.requestFocus();
@@ -162,7 +162,7 @@ public class login extends javax.swing.JFrame {
 
     private void jPasswordField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField1KeyReleased
         jLabel3.setText("");
-        if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             ingresar();
         }
     }//GEN-LAST:event_jPasswordField1KeyReleased
@@ -209,7 +209,7 @@ public class login extends javax.swing.JFrame {
         });
     }
     
-    private void llenarCombobox(){
+    private void llenarCombobox() {
         JSONObject Preparar = new JSONObject();
         Preparar.put("API", "combologin");
         String rta = pasarela.call(Preparar);
@@ -218,28 +218,28 @@ public class login extends javax.swing.JFrame {
         JSONArray arreglo = (JSONArray) Preparar.get("usuarios");
         jComboBox1.removeAllItems();
         jComboBox1.addItem("Seleccione...");
-        for (int i=0; i<arreglo.size(); i++){
-            jComboBox1.addItem(""+arreglo.get(i));
+        for (int i = 0; i < arreglo.size(); i++) {
+            jComboBox1.addItem("" + arreglo.get(i));
         }
     }
     
-    private void ingresar(){
-        if(jComboBox1.getSelectedIndex() != 0){
+    private void ingresar() {
+        if (jComboBox1.getSelectedIndex() != 0) {
             char contrasena[] = jPasswordField1.getPassword();
-            if(contrasena.length != 0){
+            if (contrasena.length != 0) {
                 String contrasenaHumana = "";
-                for(int i=0; i<contrasena.length; i++){
+                for (int i = 0; i < contrasena.length; i++) {
                     contrasenaHumana += contrasena[i];
                 }
                 JSONObject Preparar = new JSONObject();
                 JSONObject Parametros = new JSONObject();
-                Parametros.put("usu", ""+jComboBox1.getSelectedItem());
+                Parametros.put("usu", "" + jComboBox1.getSelectedItem());
                 Parametros.put("pass", contrasenaHumana);
                 Preparar.put("API", "autenticar");
                 Preparar.put("parameters", json.encode(Parametros));
                 String rta = pasarela.call(Preparar);
                 JSONObject rta2 = json.decode(rta);
-                if((rta2.get("Auth").toString()).equals("1")){
+                if ((rta2.get("Auth").toString()).equals("1")) {
                     Globales.USER_ID = Integer.parseInt(rta2.get("Usu_id").toString());
                     Globales.USER_LOGIN = rta2.get("Usu_login").toString();
                     Globales.USER_ROL = rta2.get("Usu_rol").toString();
@@ -248,7 +248,7 @@ public class login extends javax.swing.JFrame {
                     Globales.PER_NID = rta2.get("Per_nid").toString();
                     Globales.PER_CORREO = rta2.get("Per_correo").toString();
                     Globales.PER_CEL = rta2.get("Per_cel").toString();
-                    switch (rta2.get("Usu_rol").toString()){
+                    switch (rta2.get("Usu_rol").toString()) {
                         case "Cliente":
                             this.setVisible(false);
                             principal_cliente.main(null);
@@ -256,6 +256,10 @@ public class login extends javax.swing.JFrame {
                         case "Funcionario":
                             this.setVisible(false);
                             principal_funcionario.main(null);
+                            break;
+                        case "Administrador":
+                            this.setVisible(false);
+                            principal_admin.main(null);
                             break;
                         default:
                             break;
