@@ -130,7 +130,7 @@ public class servicios_ini extends Thread {
                 Response = getBitSesiones();
                 break;
             case "getBitMovimientos":
-                Response = getBitMovimientos();
+                Response = getBitMovimientos(obj);
                 break;
             default:
                 obj.clear();
@@ -547,9 +547,11 @@ public class servicios_ini extends Thread {
         return rta;
     }
     
-    protected String getBitMovimientos(){
+    protected String getBitMovimientos(JSONObject obj){
         String rta="";
-        String sql="SELECT cuentas.numero_cuenta AS numCuenta, tipo_cuentas.nombre AS tipoCuenta, personas.nombres AS nomCliente, tipo_movimientos.nombre AS tipoMovimiento, IF(movimientos.saldo_anterior IS NULL, '', movimientos.saldo_anterior) AS saldo_anterior, IF(movimientos.valor_movimiento IS NULL, '', movimientos.valor_movimiento) AS valor_movimiento, IF(movimientos.costo_movimiento IS NULL, '', movimientos.costo_movimiento) AS costo_movimiento, IF(movimientos.saldo IS NULL, '', movimientos.saldo) AS saldo_restante, DATE_FORMAT(movimientos.fecha_movimiento, '%d-%m-%Y %h:%i %p') AS fecha, sucursales.nombre AS sucursal, sucursales.ciudad "
+        String sql;
+        if(obj.get("idCliente").toString().equals("") || obj.get("idCliente").toString().equals("none")){
+            sql="SELECT cuentas.numero_cuenta AS numCuenta, tipo_cuentas.nombre AS tipoCuenta, personas.nombres AS nomCliente, tipo_movimientos.nombre AS tipoMovimiento, IF(movimientos.saldo_anterior IS NULL, '', movimientos.saldo_anterior) AS saldo_anterior, IF(movimientos.valor_movimiento IS NULL, '', movimientos.valor_movimiento) AS valor_movimiento, IF(movimientos.costo_movimiento IS NULL, '', movimientos.costo_movimiento) AS costo_movimiento, IF(movimientos.saldo IS NULL, '', movimientos.saldo) AS saldo_restante, DATE_FORMAT(movimientos.fecha_movimiento, '%d-%m-%Y %h:%i %p') AS fecha, sucursales.nombre AS sucursal, sucursales.ciudad "
                 + "FROM movimientos "
                 + "INNER JOIN cuentas ON (cuentas.id=movimientos.cuenta_id) "
                 + "INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) "
@@ -557,6 +559,17 @@ public class servicios_ini extends Thread {
                 + "INNER JOIN tipo_movimientos ON (tipo_movimientos.id=movimientos.tipo_movimiento_id) "
                 + "INNER JOIN sucursales ON (sucursales.id=movimientos.sucursal_id) "
                 + "ORDER BY movimientos.fecha_movimiento DESC";
+        } else {
+            sql="SELECT cuentas.numero_cuenta AS numCuenta, tipo_cuentas.nombre AS tipoCuenta, personas.nombres AS nomCliente, tipo_movimientos.nombre AS tipoMovimiento, IF(movimientos.saldo_anterior IS NULL, '', movimientos.saldo_anterior) AS saldo_anterior, IF(movimientos.valor_movimiento IS NULL, '', movimientos.valor_movimiento) AS valor_movimiento, IF(movimientos.costo_movimiento IS NULL, '', movimientos.costo_movimiento) AS costo_movimiento, IF(movimientos.saldo IS NULL, '', movimientos.saldo) AS saldo_restante, DATE_FORMAT(movimientos.fecha_movimiento, '%d-%m-%Y %h:%i %p') AS fecha, sucursales.nombre AS sucursal, sucursales.ciudad "
+                + "FROM movimientos "
+                + "INNER JOIN cuentas ON (cuentas.id=movimientos.cuenta_id) "
+                + "INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) "
+                + "INNER JOIN personas ON (personas.id=cuentas.persona_id) "
+                + "INNER JOIN tipo_movimientos ON (tipo_movimientos.id=movimientos.tipo_movimiento_id) "
+                + "INNER JOIN sucursales ON (sucursales.id=movimientos.sucursal_id) WHERE personas.id='"+obj.get("idCliente").toString()+"' "
+                + "ORDER BY movimientos.fecha_movimiento DESC";
+        }
+        
         JSONObject vector = new JSONObject();
         ResultSet Response = this.getQuery(sql);
         try {
