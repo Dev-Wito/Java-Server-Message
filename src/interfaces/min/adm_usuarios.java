@@ -6,6 +6,7 @@
 package interfaces.min;
 
 import config.Globales;
+import config.Storages;
 import core.HLoader;
 import core.json;
 import core.pasarela;
@@ -29,6 +30,7 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
     usuario usu;
 
     public adm_usuarios() {
+        Storages.infoTerminal();
         initComponents();
         cargarTabla();
     }
@@ -128,7 +130,6 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         txt_resumen = new javax.swing.JTextArea();
         jLabel8 = new javax.swing.JLabel();
@@ -136,7 +137,7 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-        setTitle("Administrar Usuairos");
+        setTitle("Administrar Usuarios");
 
         tabla_usuarios.setAutoCreateRowSorter(true);
         tabla_usuarios.setModel(new javax.swing.table.DefaultTableModel(
@@ -235,13 +236,6 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton4.setText("Bitácora");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
         jScrollPane2.setBackground(new java.awt.Color(0, 0, 0));
         jScrollPane2.setForeground(new java.awt.Color(51, 153, 0));
 
@@ -298,8 +292,7 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addComponent(txt_pass))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -313,7 +306,7 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(15, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
@@ -349,13 +342,12 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jButton1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3))
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -378,23 +370,6 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         cargarTabla();
     }//GEN-LAST:event_buscarKeyTyped
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-        if (usu.getId() != 0) {
-            admin_bitacora bitacora = new admin_bitacora(usu.getId(), usu.getLog());
-            principal_admin.contentPanel.add(bitacora);
-            bitacora.setVisible(true);
-            try {
-                bitacora.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(adm_usuarios.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            bitacora.requestFocus();
-        }else{
-            txt_resumen.setText("-Seleccione un usuario");
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
 
     private void tabla_usuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_usuariosMouseClicked
         // TODO add your handling code here:
@@ -466,7 +441,6 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

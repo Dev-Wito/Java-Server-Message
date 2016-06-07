@@ -8,6 +8,7 @@ package interfaces;
 import config.Globales;
 import core.pasarela;
 import interfaces.min.adm_usuarios;
+import interfaces.min.admin_bitacora;
 import javax.swing.JInternalFrame;
 import org.json.simple.JSONObject;
 
@@ -21,6 +22,7 @@ public class principal_admin extends javax.swing.JFrame {
      * Creates new form principal_admin
      */
     adm_usuarios admUsu = new adm_usuarios();
+    admin_bitacora admBit = new admin_bitacora();
 
     public principal_admin() {
         initComponents();
@@ -58,6 +60,7 @@ public class principal_admin extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
@@ -112,6 +115,14 @@ public class principal_admin extends javax.swing.JFrame {
         jMenuBar1.add(jMenu5);
 
         jMenu2.setText("Maestras");
+
+        jMenuItem1.setText("Auditoria");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem1);
 
         jMenuItem3.setText("Tipos de cuenta");
         jMenu2.add(jMenuItem3);
@@ -170,6 +181,14 @@ public class principal_admin extends javax.swing.JFrame {
         String rta = pasarela.call(Preparar);
     }//GEN-LAST:event_formWindowClosing
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if (!Ocultar(admBit.getTitle())) {
+            contentPanel.add(admBit);
+        }
+        admBit.setVisible(true);
+        admBit.requestFocus();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -213,6 +232,7 @@ public class principal_admin extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;

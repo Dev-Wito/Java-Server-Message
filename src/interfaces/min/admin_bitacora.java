@@ -5,6 +5,7 @@
  */
 package interfaces.min;
 
+import config.Storages;
 import core.json;
 import core.pasarela;
 import javax.swing.table.DefaultTableModel;
@@ -16,69 +17,57 @@ import org.json.simple.JSONObject;
  * @author wito
  */
 public class admin_bitacora extends javax.swing.JInternalFrame {
-
+    DefaultTableModel tablaSesiones;
     /**
      * Creates new form admin_bitacora
      */
-    public admin_bitacora(int id, String Nombre) {
+    public admin_bitacora() {
+        Storages.infoTerminal();
         initComponents();
-        this.setTitle("Bitacora del usuario: " + Nombre);
-        LimpiarTabla1();
-        Cargartabla1(id);
-        /*HACER LO MISMO PARA LA CONSULTA DE MOVIMIENTOS DE SALDO PERO CON ESTA CONSULTA
-        SELECT cuentas.numero_cuenta AS numCuenta, tipo_movimientos.nombre AS tipoMovimiento,sucursales.nombre AS sucursal, sucursales.ciudad, movimientos.saldo_anterior, movimientos.valor_movimiento, movimientos.costo_movimiento, movimientos.saldo AS saldo_restante, DATE_FORMAT(movimientos.fecha_movimiento, "%d-%m-%Y %h:%i %p") AS fecha FROM movimientos INNER JOIN cuentas ON (cuentas.id=movimientos.cuenta_id) INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) INNER JOIN personas ON (personas.id=cuentas.persona_id) INNER JOIN tipo_movimientos ON (tipo_movimientos.id=movimientos.tipo_movimiento_id) INNER JOIN sucursales ON (sucursales.id=movimientos.sucursal_id) ORDER BY fecha_apertura DESC
-        */
+        tablaSesiones = new DefaultTableModel();
+        jTable1.setModel(tablaSesiones);
+        tablaSesiones.addColumn("Usuario");
+        tablaSesiones.addColumn("Rol");
+        tablaSesiones.addColumn("Nombre");
+        tablaSesiones.addColumn("Sucursal");
+        tablaSesiones.addColumn("Ciudad");
+        tablaSesiones.addColumn("Fecha");
+        tablaSesiones.addColumn("H. Inicio");
+        tablaSesiones.addColumn("H. Fin");
+        llenarTablaSesiones();
     }
     
-    public void LimpiarTabla1() {
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                    {"", "Cargando..", "Cargando...", "Cargando..."}
-                },
-                new String[]{
-                    "ID", "Usuario", "Accion", "Fecha"
-                }
-        ) {
-            Class[] types = new Class[]{
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean[]{
-                true, false, false, true
-            };
-            
-            public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
-            }
-            
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setMinWidth(25);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(25);
-            jTable1.getColumnModel().getColumn(0).setMaxWidth(25);
-        }
-    }
-    
-    public void Cargartabla1(int id) {
-        JSONObject vector = new JSONObject();
-        DefaultTableModel MTabla = (DefaultTableModel) jTable1.getModel();
-        vector.put("API", "getBitacora");
-        vector.put("id", id);
-        String rta = pasarela.call(vector);
-        vector.clear();
-        vector = json.decode(rta);
-        JSONArray DATOS = (JSONArray) vector.get("acciones");
-        MTabla.removeRow(0);
-        for (int x = 0; x < DATOS.size(); x++) {
-            JSONObject MSK = json.decode(DATOS.get(x).toString());
-            Object[] Row = {MSK.get("id"), MSK.get("usuario"), MSK.get("accion"), MSK.get("fecha")};
-            MTabla.addRow(Row);
-        }
-        
-    }
+//    public void LimpiarTabla1() {
+//        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+//                new Object[][]{
+//                    {"", "Cargando..", "Cargando...", "Cargando..."}
+//                },
+//                new String[]{
+//                    "ID", "Usuario", "Accion", "Fecha"
+//                }
+//        ) {
+//            Class[] types = new Class[]{
+//                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+//            };
+//            boolean[] canEdit = new boolean[]{
+//                true, false, false, true
+//            };
+//            
+//            public Class getColumnClass(int columnIndex) {
+//                return types[columnIndex];
+//            }
+//            
+//            public boolean isCellEditable(int rowIndex, int columnIndex) {
+//                return canEdit[columnIndex];
+//            }
+//        });
+//        jScrollPane1.setViewportView(jTable1);
+//        if (jTable1.getColumnModel().getColumnCount() > 0) {
+//            jTable1.getColumnModel().getColumn(0).setMinWidth(25);
+//            jTable1.getColumnModel().getColumn(0).setPreferredWidth(25);
+//            jTable1.getColumnModel().getColumn(0).setMaxWidth(25);
+//        }
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -94,63 +83,18 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
 
         jMenu1.setText("jMenu1");
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-        setMaximizable(true);
-        setResizable(true);
-        setTitle("Bitacora de Usuario");
+        setTitle("Bitacora");
         setVisible(true);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"", "Cargando..", "Cargando...", "Cargando..."}
-            },
-            new String [] {
-                "ID", "Usuario", "Accion", "Fecha"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                true, false, false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setMinWidth(25);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(25);
-            jTable1.getColumnModel().getColumn(0).setMaxWidth(25);
-        }
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Acciones", jPanel1);
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -161,20 +105,65 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane1.setViewportView(jTable1);
+
+        jButton1.setText("Actualizar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 957, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Sesiones", jPanel1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
+            .addGap(0, 981, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+            .addGap(0, 540, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Movimientos de Cuenta", jPanel2);
+        jTabbedPane1.addTab("Movimientos", jPanel2);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 981, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 540, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Edición de usuarios", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -190,15 +179,45 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        llenarTablaSesiones();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    
+    private void llenarTablaSesiones(){
+        while (tablaSesiones.getRowCount() > 0){
+            tablaSesiones.removeRow(0);
+        }
+        JSONObject Preparar = new JSONObject();
+        Preparar.put("API", "getBitSesiones");
+        String rta = pasarela.call(Preparar);
+        Preparar.clear();
+        Preparar = json.decode(rta);
+        JSONArray arreglo = (JSONArray) Preparar.get("sesiones");
+        for (int i=0; i<arreglo.size(); i++){
+            JSONObject fila = json.decode(arreglo.get(i).toString());
+            Object[] data = {
+                fila.get("usuario").toString(),
+                fila.get("rol").toString(),
+                fila.get("nombre").toString(),
+                fila.get("sucursal").toString(),
+                fila.get("ciudad").toString(),
+                fila.get("fechaInicio").toString(),
+                fila.get("horaInicio").toString(),
+                fila.get("horaFin").toString()
+            };
+            tablaSesiones.addRow(data);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 }

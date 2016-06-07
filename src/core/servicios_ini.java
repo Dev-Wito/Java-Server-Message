@@ -126,6 +126,9 @@ public class servicios_ini extends Thread {
             case "setBitacoraFinSesion":
                 Response = setBitacoraFinSesion(obj);
                 break;
+            case "getBitSesiones":
+                Response = getBitSesiones();
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -500,6 +503,41 @@ public class servicios_ini extends Thread {
             SentenciaBitacora.executeUpdate();
             
             rta = "success";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
+    }
+    
+    protected String getBitSesiones(){
+        String rta="";
+        String sql="SELECT usuarios.usuario, usuarios.rol, personas.nombres AS nombre, sucursales.nombre AS sucursal, sucursales.ciudad, DATE_FORMAT(bitacora_sesion.inicio, '%d-%m-%Y') AS fechaInicio, DATE_FORMAT(bitacora_sesion.inicio, '%h:%i:%s %p') AS horaInicio, DATE_FORMAT(bitacora_sesion.fin, '%d-%m-%Y') AS fechaFin, DATE_FORMAT(bitacora_sesion.fin, '%h:%i:%s %p') AS horaFin "
+                + "FROM bitacora_sesion "
+                + "INNER JOIN usuarios ON (usuarios.id=bitacora_sesion.usuario_id) "
+                + "INNER JOIN personas ON (personas.id=usuarios.persona_id) "
+                + "INNER JOIN sucursales ON (sucursales.id=bitacora_sesion.sucursal_id) "
+                + "ORDER BY bitacora_sesion.id DESC";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery(sql);
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String sesiones[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("usuario", Response.getString("usuario"));
+                vector.put("rol", Response.getString("rol"));
+                vector.put("nombre", Response.getString("nombre"));
+                vector.put("sucursal", Response.getString("sucursal"));
+                vector.put("ciudad", Response.getString("ciudad"));
+                vector.put("fechaInicio", Response.getString("fechaInicio"));
+                vector.put("horaInicio", Response.getString("horaInicio"));
+                vector.put("fechaFin", Response.getString("fechaFin"));
+                vector.put("horaFin", Response.getString("horaFin"));
+                sesiones[v] = json.encode(vector);
+            }
+            rta = "{\"sesiones\":[" + String.join(",", sesiones) + "]}";
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
