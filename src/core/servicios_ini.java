@@ -511,7 +511,7 @@ public class servicios_ini extends Thread {
     
     protected String getBitSesiones(){
         String rta="";
-        String sql="SELECT usuarios.usuario, usuarios.rol, personas.nombres AS nombre, sucursales.nombre AS sucursal, sucursales.ciudad, DATE_FORMAT(bitacora_sesion.inicio, '%d-%m-%Y') AS fechaInicio, DATE_FORMAT(bitacora_sesion.inicio, '%h:%i:%s %p') AS horaInicio, DATE_FORMAT(bitacora_sesion.fin, '%d-%m-%Y') AS fechaFin, DATE_FORMAT(bitacora_sesion.fin, '%h:%i:%s %p') AS horaFin "
+        String sql="SELECT usuarios.usuario, usuarios.rol, personas.nombres AS nombre, sucursales.nombre AS sucursal, sucursales.ciudad, DATE_FORMAT(bitacora_sesion.inicio, '%d-%m-%Y') AS fechaInicio, DATE_FORMAT(bitacora_sesion.inicio, '%h:%i:%s %p') AS horaInicio, IF(bitacora_sesion.fin IS NULL, '', DATE_FORMAT(bitacora_sesion.fin, '%d-%m-%Y')) AS fechaFin, IF(bitacora_sesion.fin IS NULL, '', DATE_FORMAT(bitacora_sesion.fin, '%h:%i:%s %p')) AS horaFin "
                 + "FROM bitacora_sesion "
                 + "INNER JOIN usuarios ON (usuarios.id=bitacora_sesion.usuario_id) "
                 + "INNER JOIN personas ON (personas.id=usuarios.persona_id) "
