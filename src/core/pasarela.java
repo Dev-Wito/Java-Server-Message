@@ -16,7 +16,7 @@ import org.json.simple.JSONObject;
  *
  * @author wito
  */
-public class pasarela {
+public class pasarela extends Thread{
 
     public static String call(JSONObject send) {
         DataInputStream Response; //Desde el Servidor
