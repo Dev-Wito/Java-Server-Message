@@ -78,8 +78,6 @@ public class principal_funcionario extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel7 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox<>();
         jButton3 = new javax.swing.JButton();
@@ -249,15 +247,6 @@ public class principal_funcionario extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel7.setText("Numero cuenta");
-
-        jTextField5.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTextField5KeyReleased(evt);
-            }
-        });
-
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel8.setText("Cliente");
 
@@ -307,12 +296,10 @@ public class principal_funcionario extends javax.swing.JFrame {
                         .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jComboBox1, 0, 385, Short.MAX_VALUE)
-                    .addComponent(jTextField5)
                     .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTextField7)
@@ -326,10 +313,6 @@ public class principal_funcionario extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
@@ -349,7 +332,7 @@ public class principal_funcionario extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4))
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(159, Short.MAX_VALUE))
+                .addContainerGap(192, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Cuenta", jPanel3);
@@ -385,7 +368,7 @@ public class principal_funcionario extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Historial", jPanel4);
+        jTabbedPane1.addTab("Auditoria", jPanel4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -419,7 +402,6 @@ public class principal_funcionario extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         jComboBox1.setSelectedIndex(0);
-        jTextField5.setText("");
         jComboBox2.setSelectedIndex(0);
         jTextField7.setText("");
         jLabel9.setText("");
@@ -447,10 +429,9 @@ public class principal_funcionario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if(jComboBox1.getSelectedIndex()!=0 && jTextField5.getText().length()>0 && jComboBox2.getSelectedIndex()!=0 && jTextField7.getText().length()>0){
+        if(jComboBox1.getSelectedIndex()!=0 && jComboBox2.getSelectedIndex()!=0 && jTextField7.getText().length()>0){
             guardarCuenta();
             jComboBox1.setSelectedIndex(0);
-            jTextField5.setText("");
             jComboBox2.setSelectedIndex(0);
             jTextField7.setText("");
             jComboBox1.requestFocus();
@@ -463,21 +444,11 @@ public class principal_funcionario extends javax.swing.JFrame {
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         jLabel9.setText("");
         if(jComboBox1.getSelectedIndex() != 0){
-            jTextField5.requestFocus();
+            jComboBox2.requestFocus();
         } else {
             jComboBox1.requestFocus();
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
-
-    private void jTextField5KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField5KeyReleased
-        if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-            if(jTextField5.getText().length() > 0){
-                jComboBox2.requestFocus();
-            } else {
-                jTextField5.requestFocus();
-            }
-        }
-    }//GEN-LAST:event_jTextField5KeyReleased
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
         if(jComboBox2.getSelectedIndex() != 0){
@@ -599,7 +570,6 @@ public class principal_funcionario extends javax.swing.JFrame {
         item_combo itemCliente = (item_combo) clientes.getSelectedItem();
         Preparar.put("API", "setCuenta");
         Preparar.put("tipo_cuenta_id",itemTipoCuenta.getId());
-        Preparar.put("num_cuenta", jTextField5.getText());
         Preparar.put("cliente_id", itemCliente.getId());
         Preparar.put("saldo_ini", jTextField7.getText());
         Preparar.put("sucursal_id", Globales.TERMINAL_ID);
@@ -626,7 +596,6 @@ public class principal_funcionario extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -642,7 +611,6 @@ public class principal_funcionario extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
