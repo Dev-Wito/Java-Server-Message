@@ -10,8 +10,13 @@ import core.pasarela;
 import interfaces.min.adm_usuarios;
 import interfaces.min.admin_bitacora;
 import java.beans.PropertyVetoException;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import org.json.simple.JSONObject;
 
@@ -20,10 +25,7 @@ import org.json.simple.JSONObject;
  * @author wito
  */
 public class principal_admin extends javax.swing.JFrame {
-
-    /**
-     * Creates new form principal_admin
-     */
+    JFileChooser chooser;
     adm_usuarios admUsu = new adm_usuarios();
     admin_bitacora admBit = new admin_bitacora();
 
@@ -59,6 +61,7 @@ public class principal_admin extends javax.swing.JFrame {
         contentPanel = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu5 = new javax.swing.JMenu();
+        jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -98,6 +101,14 @@ public class principal_admin extends javax.swing.JFrame {
         );
 
         jMenu5.setText("Administrar");
+
+        jMenuItem8.setText("Backup DB");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem8);
 
         jMenuItem6.setText("Usuarios");
         jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
@@ -210,6 +221,14 @@ public class principal_admin extends javax.swing.JFrame {
         cambiar_password.main(null);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        try {
+            exportar();
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(ejemploExportar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -245,6 +264,39 @@ public class principal_admin extends javax.swing.JFrame {
         });
     }
     
+    private void exportar() throws IOException, InterruptedException{
+        chooser = new JFileChooser();
+        chooser.setDialogTitle("Seleccione carpeta para guardar");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        
+        if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+            String rutaCarpeta = chooser.getSelectedFile().getAbsolutePath();
+            dumpDB(rutaCarpeta);
+        }
+    }
+    
+    private void dumpDB(String rutaCarpeta) throws IOException, InterruptedException{
+        String host = "127.0.0.1";
+        String base = "java-final";
+        String usuario = "root";
+        String passwd = "";
+        
+        DateFormat formato = new SimpleDateFormat("dd-mm-yyyy");
+        Date fecha = new Date();
+        String fecha2 = formato.format(fecha);
+        
+        String archivo = base+"-"+fecha2+".sql";
+        String comando = "mysqldump -u "+usuario+" -h "+host+" -p"+passwd+" "+base+" -r "+rutaCarpeta+"/"+archivo;
+        
+        Process procesaComando = Runtime.getRuntime().exec(comando);
+        if(procesaComando.waitFor() == 0){
+            System.out.println("Backup exitosa");
+        } else {
+            System.out.println("Backup falló "+comando);
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JDesktopPane contentPanel;
     private javax.swing.JMenu jMenu2;
@@ -260,6 +312,7 @@ public class principal_admin extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     // End of variables declaration//GEN-END:variables
 }
