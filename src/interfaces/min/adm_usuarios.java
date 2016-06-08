@@ -391,6 +391,7 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
                 HumanPass += Pass[x];
             }
             vector.put("API", "setUsuario");
+            vector.put("C", Globales.USER_ID);
             vector.put("id", usu.getId());
             vector.put("usu", txt_login.getText());
             vector.put("key", HumanPass);

@@ -84,4 +84,18 @@ public class HLoader extends Thread {
             MTabla.addRow(Row);
         }
     }
+
+    public void tablaBit() {
+        JSONObject vector = new JSONObject();
+        vector.put("API", "getBitUsu");
+        String rta = pasarela.call(vector);
+        vector.clear();
+        vector = json.decode(rta);
+        JSONArray Array_Usuarios = (JSONArray) vector.get("bitacora");
+        for (int v = 0; v < Array_Usuarios.size(); v++) {
+            JSONObject Datos = json.decode(Array_Usuarios.get(v).toString());
+            Object[] Row = {Datos.get("edi").toString(), Datos.get("acc").toString(),Datos.get("usu").toString(),Datos.get("fec").toString()};
+            MTabla.addRow(Row);
+        }
+    }
 }

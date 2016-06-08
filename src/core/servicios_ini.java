@@ -184,6 +184,9 @@ public class servicios_ini extends Thread {
             case "setBackup":
                 Response = setBackup(obj);
                 break;
+            case "getBitUsu":
+                Response = getBitUsu();
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -484,7 +487,7 @@ public class servicios_ini extends Thread {
     protected String setUsuario(JSONObject obj) {
         String rta = "";
         ResultSet Response;
-        String SQL_Insert = "CALL SP_REGISTRAR_USUARIO(?,?,?,?,?,?,?,?)";
+        String SQL_Insert = "CALL SP_REGISTRAR_USUARIO(?,?,?,?,?,?,?,?,?)";
         try {
             CallableStatement Sentencia = ConectDB.prepareCall(SQL_Insert);
             Sentencia.setInt(1, Integer.parseInt(obj.get("id").toString()));
@@ -495,6 +498,7 @@ public class servicios_ini extends Thread {
             Sentencia.setString(6, obj.get("nom").toString());
             Sentencia.setString(7, obj.get("cor").toString());
             Sentencia.setString(8, obj.get("cel").toString());
+            Sentencia.setInt(9, Integer.parseInt(obj.get("C").toString()));
             Sentencia.execute();
             Response = Sentencia.getResultSet();
             while (Response.next()) {
@@ -869,6 +873,7 @@ public class servicios_ini extends Thread {
                             vector.put("usuario", Response.getString("usuario"));
                             vector.put("llave", Response.getString("llave"));
                             vector.put("rol", Response.getString("rol"));
+                            vector.put("C", Response.getString("C"));
                             break;
                         case "tipo_movimientos":
                             vector.put("id", Response.getString("id"));
@@ -917,15 +922,8 @@ public class servicios_ini extends Thread {
                             vector.put("id", Response.getString("id"));
                             vector.put("usuario_editor", Response.getString("usuario_editor"));
                             vector.put("usuario_editado", Response.getString("usuario_editado"));
+                            vector.put("accion", Response.getString("accion"));
                             vector.put("fecha_edicion", Response.getString("fecha_edicion"));
-                            vector.put("ant_num_ident", Response.getString("ant_num_ident"));
-                            vector.put("ant_nombres", Response.getString("ant_nombres"));
-                            vector.put("ant_correo", Response.getString("ant_correo"));
-                            vector.put("ant_celular", Response.getString("ant_celular"));
-                            vector.put("des_num_ident", Response.getString("des_num_ident"));
-                            vector.put("des_nombres", Response.getString("des_nombres"));
-                            vector.put("des_correo", Response.getString("des_correo"));
-                            vector.put("des_celular", Response.getString("des_celular"));
                             break;
                     }
                     cuentas[v] = json.encode(vector);
@@ -1087,5 +1085,29 @@ public class servicios_ini extends Thread {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
         return RTA;
+    }
+
+    private String getBitUsu() {
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT usuarios.usuario AS Editor, bitacora_edicion_usuarios.accion , usuarios_1.usuario, bitacora_edicion_usuarios.fecha_edicion FROM bitacora_edicion_usuarios INNER JOIN usuarios  ON (bitacora_edicion_usuarios.usuario_editor = usuarios.id) INNER JOIN usuarios AS usuarios_1 ON (bitacora_edicion_usuarios.usuario_editado = usuarios_1.id)");
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String cuentas[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("edi", Response.getString("Editor"));
+                vector.put("acc", Response.getString("accion"));
+                vector.put("usu", Response.getString("usuario"));
+                vector.put("fec", Response.getString("fecha_edicion"));
+                cuentas[v] = json.encode(vector);
+            }
+            $rta = "{\"bitacora\":[" + String.join(",", cuentas) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return $rta;
     }
 }

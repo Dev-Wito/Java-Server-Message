@@ -6,6 +6,7 @@
 package interfaces.min;
 
 import config.Storages;
+import core.HLoader;
 import core.item_combo;
 import core.json;
 import core.pasarela;
@@ -21,9 +22,11 @@ import org.json.simple.JSONObject;
  * @author wito
  */
 public class admin_bitacora extends javax.swing.JInternalFrame {
+
     DefaultTableModel tablaSesiones, tablaMovimientos;
     DefaultComboBoxModel clientes;
     static boolean bandCombClientes;
+
     /**
      * Creates new form admin_bitacora
      */
@@ -59,8 +62,9 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         tablaMovimientos.addColumn("Sucursal");
         tablaMovimientos.addColumn("Ciudad");
         llenarTablaMovimientos("none");
+        llenarBitacoraUsuario();
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -84,6 +88,8 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
 
         jMenu1.setText("jMenu1");
 
@@ -199,19 +205,43 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
 
         jButton3.setText("Actualizar");
 
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Editor", "Accion", "Editado", "Fecha"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(jTable3);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(950, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1074, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(499, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
                 .addContainerGap())
         );
@@ -241,12 +271,12 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        if(bandCombClientes == true){
-            if(jComboBox1.getSelectedIndex() == 0){
+        if (bandCombClientes == true) {
+            if (jComboBox1.getSelectedIndex() == 0) {
                 llenarTablaMovimientos("none");
             } else {
                 item_combo itemCliente = (item_combo) clientes.getSelectedItem();
-                llenarTablaMovimientos(""+itemCliente.getId());
+                llenarTablaMovimientos("" + itemCliente.getId());
             }
         } else {
             bandCombClientes = true;
@@ -254,7 +284,7 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         jButton2.requestFocus();
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
-    private void llenarClientes(){
+    private void llenarClientes() {
         JSONObject Preparar = new JSONObject();
         Preparar.put("API", "getClientes");
         String rta = pasarela.call(Preparar);
@@ -268,9 +298,9 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
             clientes.addElement(new item_combo(Integer.parseInt(elemento.get("id").toString()), elemento.get("label").toString()));
         }
     }
-    
-    private void llenarTablaSesiones(){
-        while (tablaSesiones.getRowCount() > 0){
+
+    private void llenarTablaSesiones() {
+        while (tablaSesiones.getRowCount() > 0) {
             tablaSesiones.removeRow(0);
         }
         JSONObject Preparar = new JSONObject();
@@ -279,7 +309,7 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         Preparar.clear();
         Preparar = json.decode(rta);
         JSONArray arreglo = (JSONArray) Preparar.get("sesiones");
-        for (int i=0; i<arreglo.size(); i++){
+        for (int i = 0; i < arreglo.size(); i++) {
             JSONObject fila = json.decode(arreglo.get(i).toString());
             Object[] data = {
                 fila.get("usuario").toString(),
@@ -294,9 +324,9 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
             tablaSesiones.addRow(data);
         }
     }
-    
-    private void llenarTablaMovimientos(String idCliente){
-        while (tablaMovimientos.getRowCount() > 0){
+
+    private void llenarTablaMovimientos(String idCliente) {
+        while (tablaMovimientos.getRowCount() > 0) {
             tablaMovimientos.removeRow(0);
         }
         JSONObject Preparar = new JSONObject();
@@ -306,7 +336,7 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         Preparar.clear();
         Preparar = json.decode(rta);
         JSONArray arreglo = (JSONArray) Preparar.get("movimientos");
-        for (int i=0; i<arreglo.size(); i++){
+        for (int i = 0; i < arreglo.size(); i++) {
             JSONObject fila = json.decode(arreglo.get(i).toString());
             Object[] data = {
                 fila.get("numCuenta").toString(),
@@ -325,6 +355,28 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         }
     }
 
+    public void llenarBitacoraUsuario() {
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Editor", "Accion", "Editado", "Fecha"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(jTable3);
+        DefaultTableModel MTabla = (DefaultTableModel) jTable3.getModel();
+        HLoader LOAD_TB = new HLoader(MTabla, "");
+        LOAD_TB.tablaBit();
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -337,8 +389,10 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
     // End of variables declaration//GEN-END:variables
 }
