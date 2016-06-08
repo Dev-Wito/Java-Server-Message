@@ -42,7 +42,6 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
         txt_correo.setText("");
         txt_login.setText("");
         txt_pass.setText("");
-        txt_documento.requestFocus();
         usu = new usuario(0, "", "", "", "", "", "");
         limpiarTabla();
         DefaultTableModel MTabla = (DefaultTableModel) tabla_usuarios.getModel();
@@ -176,9 +175,9 @@ public class adm_usuarios extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tabla_usuarios);
         if (tabla_usuarios.getColumnModel().getColumnCount() > 0) {
-            tabla_usuarios.getColumnModel().getColumn(0).setMinWidth(10);
-            tabla_usuarios.getColumnModel().getColumn(0).setPreferredWidth(10);
-            tabla_usuarios.getColumnModel().getColumn(0).setMaxWidth(10);
+            tabla_usuarios.getColumnModel().getColumn(0).setMinWidth(1);
+            tabla_usuarios.getColumnModel().getColumn(0).setPreferredWidth(1);
+            tabla_usuarios.getColumnModel().getColumn(0).setMaxWidth(1);
             tabla_usuarios.getColumnModel().getColumn(1).setMinWidth(10);
             tabla_usuarios.getColumnModel().getColumn(1).setPreferredWidth(10);
             tabla_usuarios.getColumnModel().getColumn(2).setMinWidth(40);

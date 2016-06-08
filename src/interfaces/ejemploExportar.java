@@ -75,9 +75,9 @@ public class ejemploExportar extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1)
-                .addGap(54, 54, 54)
+                .addGap(78, 78, 78)
                 .addComponent(jButton2)
-                .addContainerGap(176, Short.MAX_VALUE))
+                .addContainerGap(152, Short.MAX_VALUE))
         );
 
         pack();

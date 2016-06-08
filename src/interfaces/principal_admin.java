@@ -7,6 +7,9 @@ package interfaces;
 
 import config.Globales;
 import core.pasarela;
+import interfaces.min.adm_costos_mov;
+import interfaces.min.adm_sucs;
+import interfaces.min.adm_tipos_cuenta;
 import interfaces.min.adm_usuarios;
 import interfaces.min.admin_bitacora;
 import java.beans.PropertyVetoException;
@@ -25,9 +28,13 @@ import org.json.simple.JSONObject;
  * @author wito
  */
 public class principal_admin extends javax.swing.JFrame {
+
     JFileChooser chooser;
     adm_usuarios admUsu = new adm_usuarios();
     admin_bitacora admBit = new admin_bitacora();
+    adm_costos_mov admCuentasTP = new adm_costos_mov();
+    adm_sucs admSucursales = new adm_sucs();
+    adm_tipos_cuenta admTPCuentas = new adm_tipos_cuenta();
 
     public principal_admin() {
         initComponents();
@@ -97,7 +104,7 @@ public class principal_admin extends javax.swing.JFrame {
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 367, Short.MAX_VALUE)
+            .addGap(0, 525, Short.MAX_VALUE)
         );
 
         jMenu5.setText("Administrar");
@@ -148,12 +155,27 @@ public class principal_admin extends javax.swing.JFrame {
         jMenu2.add(jMenuItem1);
 
         jMenuItem3.setText("Tipos de cuenta");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem3);
 
         jMenuItem4.setText("Sucursales");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem4);
 
         jMenuItem5.setText("Costos por movimiento");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem5);
 
         jMenuBar1.add(jMenu2);
@@ -168,7 +190,9 @@ public class principal_admin extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(contentPanel)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(contentPanel)
+                .addGap(0, 0, 0))
         );
 
         pack();
@@ -229,6 +253,33 @@ public class principal_admin extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        if (!Ocultar(admTPCuentas.getTitle())) {
+            contentPanel.add(admTPCuentas);
+        }
+        admTPCuentas.setVisible(true);
+        admTPCuentas.requestFocus();
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        if (!Ocultar(admCuentasTP.getTitle())) {
+            contentPanel.add(admCuentasTP);
+        }
+        admCuentasTP.setVisible(true);
+        admCuentasTP.requestFocus();
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // TODO add your handling code here:
+        if (!Ocultar(admSucursales.getTitle())) {
+            contentPanel.add(admSucursales);
+        }
+        admSucursales.setVisible(true);
+        admSucursales.requestFocus();
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -263,40 +314,40 @@ public class principal_admin extends javax.swing.JFrame {
             }
         });
     }
-    
-    private void exportar() throws IOException, InterruptedException{
+
+    private void exportar() throws IOException, InterruptedException {
         chooser = new JFileChooser();
         chooser.setDialogTitle("Seleccione carpeta para guardar");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);
-        
-        if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             String rutaCarpeta = chooser.getSelectedFile().getAbsolutePath();
             dumpDB(rutaCarpeta);
         }
     }
-    
-    private void dumpDB(String rutaCarpeta) throws IOException, InterruptedException{
+
+    private void dumpDB(String rutaCarpeta) throws IOException, InterruptedException {
         String host = "127.0.0.1";
         String base = "java-final";
         String usuario = "root";
         String passwd = "";
-        
+
         DateFormat formato = new SimpleDateFormat("dd-mm-yyyy");
         Date fecha = new Date();
         String fecha2 = formato.format(fecha);
-        
-        String archivo = base+"-"+fecha2+".sql";
-        String comando = "mysqldump -u "+usuario+" -h "+host+" -p"+passwd+" "+base+" -r "+rutaCarpeta+"/"+archivo;
-        
+
+        String archivo = base + "-" + fecha2 + ".sql";
+        String comando = "mysqldump -u " + usuario + " -h " + host + " -p" + passwd + " " + base + " -r " + rutaCarpeta + "/" + archivo;
+
         Process procesaComando = Runtime.getRuntime().exec(comando);
-        if(procesaComando.waitFor() == 0){
+        if (procesaComando.waitFor() == 0) {
             System.out.println("Backup exitosa");
         } else {
-            System.out.println("Backup falló "+comando);
+            System.out.println("Backup falló " + comando);
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JDesktopPane contentPanel;
     private javax.swing.JMenu jMenu2;

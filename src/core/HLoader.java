@@ -39,4 +39,49 @@ public class HLoader extends Thread {
             MTabla.addRow(Row);
         }
     }
+
+    public void tabla2() {
+        JSONObject vector = new JSONObject();
+        vector.put("API", "getListTPMovimientos");
+        String rta = pasarela.call(vector);
+        vector.clear();
+        vector = json.decode(rta);
+        JSONArray Array_Usuarios = (JSONArray) vector.get("tipos");
+        MTabla.removeRow(0);
+        for (int v = 0; v < Array_Usuarios.size(); v++) {
+            JSONObject Datos = json.decode(Array_Usuarios.get(v).toString());
+            Object[] Row = {Integer.parseInt(Datos.get("id").toString()), Datos.get("nom").toString(), Datos.get("local").toString(), Datos.get("remoto").toString()};
+            MTabla.addRow(Row);
+        }
+    }
+
+    public void tabla3() {
+        JSONObject vector = new JSONObject();
+        vector.put("API", "getListSucursales");
+        String rta = pasarela.call(vector);
+        vector.clear();
+        vector = json.decode(rta);
+        JSONArray Array_Usuarios = (JSONArray) vector.get("sucursales");
+        MTabla.removeRow(0);
+        for (int v = 0; v < Array_Usuarios.size(); v++) {
+            JSONObject Datos = json.decode(Array_Usuarios.get(v).toString());
+            Object[] Row = {Integer.parseInt(Datos.get("id").toString()), Datos.get("nom").toString(), Datos.get("ciud").toString(), Datos.get("dir").toString()};
+            MTabla.addRow(Row);
+        }
+    }
+
+    public void tabla4() {
+        JSONObject vector = new JSONObject();
+        vector.put("API", "getListTPCuenta");
+        String rta = pasarela.call(vector);
+        vector.clear();
+        vector = json.decode(rta);
+        JSONArray Array_Usuarios = (JSONArray) vector.get("cuentas");
+        MTabla.removeRow(0);
+        for (int v = 0; v < Array_Usuarios.size(); v++) {
+            JSONObject Datos = json.decode(Array_Usuarios.get(v).toString());
+            Object[] Row = {Integer.parseInt(Datos.get("id").toString()), Datos.get("nom").toString()};
+            MTabla.addRow(Row);
+        }
+    }
 }

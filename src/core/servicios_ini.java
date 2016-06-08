@@ -135,6 +135,24 @@ public class servicios_ini extends Thread {
             case "setPasswd":
                 Response = setPasswd(obj);
                 break;
+            case "getListTPMovimientos":
+                Response = getListTPMovimientos();
+                break;
+            case "setTPMovimiento":
+                Response = setTPMovimiento(obj);
+                break;
+            case "getListSucursales":
+                Response = getListSucursales();
+                break;
+            case "setTSucursal":
+                Response = setTSucursal(obj);
+                break;
+            case "getListTPCuenta":
+                Response = getListTPCuenta();
+                break;
+            case "setTTPCuenta":
+                Response = setTTPCuenta(obj);
+                break;
             default:
                 obj.clear();
                 obj.put("error", true);
@@ -476,16 +494,16 @@ public class servicios_ini extends Thread {
         return rta;
     }
 
-    protected String setBitacoraSesion(JSONObject obj){
-    String rta="";
-    PreparedStatement SentenciaBitacora = null;
+    protected String setBitacoraSesion(JSONObject obj) {
+        String rta = "";
+        PreparedStatement SentenciaBitacora = null;
         String sql = "INSERT INTO bitacora_sesion (usuario_id, sucursal_id, inicio) VALUES (?, ?, CURRENT_TIMESTAMP())";
         try {
             SentenciaBitacora = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             SentenciaBitacora.setInt(1, Integer.parseInt(obj.get("usuario_id").toString()));
             SentenciaBitacora.setInt(2, Integer.parseInt(obj.get("sucursal_id").toString()));
             SentenciaBitacora.executeUpdate();
-            
+
             int idSesion;
             ResultSet keys = SentenciaBitacora.getGeneratedKeys();
             keys.first();
@@ -498,26 +516,26 @@ public class servicios_ini extends Thread {
         }
         return rta;
     }
-    
-    protected String setBitacoraFinSesion(JSONObject obj){
-    String rta="fail";
-    PreparedStatement SentenciaBitacora = null;
+
+    protected String setBitacoraFinSesion(JSONObject obj) {
+        String rta = "fail";
+        PreparedStatement SentenciaBitacora = null;
         String sql = "UPDATE bitacora_sesion SET fin = CURRENT_TIMESTAMP() WHERE id = ?";
         try {
             SentenciaBitacora = ConectDB.prepareStatement(sql);
             SentenciaBitacora.setInt(1, Integer.parseInt(obj.get("idSesion").toString()));
             SentenciaBitacora.executeUpdate();
-            
+
             rta = "success";
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rta;
     }
-    
-    protected String getBitSesiones(){
-        String rta="";
-        String sql="SELECT usuarios.usuario, usuarios.rol, personas.nombres AS nombre, sucursales.nombre AS sucursal, sucursales.ciudad, DATE_FORMAT(bitacora_sesion.inicio, '%d-%m-%Y') AS fechaInicio, DATE_FORMAT(bitacora_sesion.inicio, '%h:%i:%s %p') AS horaInicio, IF(bitacora_sesion.fin IS NULL, '', DATE_FORMAT(bitacora_sesion.fin, '%d-%m-%Y')) AS fechaFin, IF(bitacora_sesion.fin IS NULL, '', DATE_FORMAT(bitacora_sesion.fin, '%h:%i:%s %p')) AS horaFin "
+
+    protected String getBitSesiones() {
+        String rta = "";
+        String sql = "SELECT usuarios.usuario, usuarios.rol, personas.nombres AS nombre, sucursales.nombre AS sucursal, sucursales.ciudad, DATE_FORMAT(bitacora_sesion.inicio, '%d-%m-%Y') AS fechaInicio, DATE_FORMAT(bitacora_sesion.inicio, '%h:%i:%s %p') AS horaInicio, IF(bitacora_sesion.fin IS NULL, '', DATE_FORMAT(bitacora_sesion.fin, '%d-%m-%Y')) AS fechaFin, IF(bitacora_sesion.fin IS NULL, '', DATE_FORMAT(bitacora_sesion.fin, '%h:%i:%s %p')) AS horaFin "
                 + "FROM bitacora_sesion "
                 + "INNER JOIN usuarios ON (usuarios.id=bitacora_sesion.usuario_id) "
                 + "INNER JOIN personas ON (personas.id=usuarios.persona_id) "
@@ -549,30 +567,30 @@ public class servicios_ini extends Thread {
         }
         return rta;
     }
-    
-    protected String getBitMovimientos(JSONObject obj){
-        String rta="";
+
+    protected String getBitMovimientos(JSONObject obj) {
+        String rta = "";
         String sql;
-        if(obj.get("idCliente").toString().equals("") || obj.get("idCliente").toString().equals("none")){
-            sql="SELECT cuentas.numero_cuenta AS numCuenta, tipo_cuentas.nombre AS tipoCuenta, personas.nombres AS nomCliente, tipo_movimientos.nombre AS tipoMovimiento, IF(movimientos.saldo_anterior IS NULL, '', movimientos.saldo_anterior) AS saldo_anterior, IF(movimientos.valor_movimiento IS NULL, '', movimientos.valor_movimiento) AS valor_movimiento, IF(movimientos.costo_movimiento IS NULL, '', movimientos.costo_movimiento) AS costo_movimiento, IF(movimientos.saldo IS NULL, '', movimientos.saldo) AS saldo_restante, DATE_FORMAT(movimientos.fecha_movimiento, '%d-%m-%Y %h:%i %p') AS fecha, sucursales.nombre AS sucursal, sucursales.ciudad "
-                + "FROM movimientos "
-                + "INNER JOIN cuentas ON (cuentas.id=movimientos.cuenta_id) "
-                + "INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) "
-                + "INNER JOIN personas ON (personas.id=cuentas.persona_id) "
-                + "INNER JOIN tipo_movimientos ON (tipo_movimientos.id=movimientos.tipo_movimiento_id) "
-                + "INNER JOIN sucursales ON (sucursales.id=movimientos.sucursal_id) "
-                + "ORDER BY movimientos.fecha_movimiento DESC";
+        if (obj.get("idCliente").toString().equals("") || obj.get("idCliente").toString().equals("none")) {
+            sql = "SELECT cuentas.numero_cuenta AS numCuenta, tipo_cuentas.nombre AS tipoCuenta, personas.nombres AS nomCliente, tipo_movimientos.nombre AS tipoMovimiento, IF(movimientos.saldo_anterior IS NULL, '', movimientos.saldo_anterior) AS saldo_anterior, IF(movimientos.valor_movimiento IS NULL, '', movimientos.valor_movimiento) AS valor_movimiento, IF(movimientos.costo_movimiento IS NULL, '', movimientos.costo_movimiento) AS costo_movimiento, IF(movimientos.saldo IS NULL, '', movimientos.saldo) AS saldo_restante, DATE_FORMAT(movimientos.fecha_movimiento, '%d-%m-%Y %h:%i %p') AS fecha, sucursales.nombre AS sucursal, sucursales.ciudad "
+                    + "FROM movimientos "
+                    + "INNER JOIN cuentas ON (cuentas.id=movimientos.cuenta_id) "
+                    + "INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) "
+                    + "INNER JOIN personas ON (personas.id=cuentas.persona_id) "
+                    + "INNER JOIN tipo_movimientos ON (tipo_movimientos.id=movimientos.tipo_movimiento_id) "
+                    + "INNER JOIN sucursales ON (sucursales.id=movimientos.sucursal_id) "
+                    + "ORDER BY movimientos.fecha_movimiento DESC";
         } else {
-            sql="SELECT cuentas.numero_cuenta AS numCuenta, tipo_cuentas.nombre AS tipoCuenta, personas.nombres AS nomCliente, tipo_movimientos.nombre AS tipoMovimiento, IF(movimientos.saldo_anterior IS NULL, '', movimientos.saldo_anterior) AS saldo_anterior, IF(movimientos.valor_movimiento IS NULL, '', movimientos.valor_movimiento) AS valor_movimiento, IF(movimientos.costo_movimiento IS NULL, '', movimientos.costo_movimiento) AS costo_movimiento, IF(movimientos.saldo IS NULL, '', movimientos.saldo) AS saldo_restante, DATE_FORMAT(movimientos.fecha_movimiento, '%d-%m-%Y %h:%i %p') AS fecha, sucursales.nombre AS sucursal, sucursales.ciudad "
-                + "FROM movimientos "
-                + "INNER JOIN cuentas ON (cuentas.id=movimientos.cuenta_id) "
-                + "INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) "
-                + "INNER JOIN personas ON (personas.id=cuentas.persona_id) "
-                + "INNER JOIN tipo_movimientos ON (tipo_movimientos.id=movimientos.tipo_movimiento_id) "
-                + "INNER JOIN sucursales ON (sucursales.id=movimientos.sucursal_id) WHERE personas.id='"+obj.get("idCliente").toString()+"' "
-                + "ORDER BY movimientos.fecha_movimiento DESC";
+            sql = "SELECT cuentas.numero_cuenta AS numCuenta, tipo_cuentas.nombre AS tipoCuenta, personas.nombres AS nomCliente, tipo_movimientos.nombre AS tipoMovimiento, IF(movimientos.saldo_anterior IS NULL, '', movimientos.saldo_anterior) AS saldo_anterior, IF(movimientos.valor_movimiento IS NULL, '', movimientos.valor_movimiento) AS valor_movimiento, IF(movimientos.costo_movimiento IS NULL, '', movimientos.costo_movimiento) AS costo_movimiento, IF(movimientos.saldo IS NULL, '', movimientos.saldo) AS saldo_restante, DATE_FORMAT(movimientos.fecha_movimiento, '%d-%m-%Y %h:%i %p') AS fecha, sucursales.nombre AS sucursal, sucursales.ciudad "
+                    + "FROM movimientos "
+                    + "INNER JOIN cuentas ON (cuentas.id=movimientos.cuenta_id) "
+                    + "INNER JOIN tipo_cuentas ON (tipo_cuentas.id=cuentas.tipo_cuenta_id) "
+                    + "INNER JOIN personas ON (personas.id=cuentas.persona_id) "
+                    + "INNER JOIN tipo_movimientos ON (tipo_movimientos.id=movimientos.tipo_movimiento_id) "
+                    + "INNER JOIN sucursales ON (sucursales.id=movimientos.sucursal_id) WHERE personas.id='" + obj.get("idCliente").toString() + "' "
+                    + "ORDER BY movimientos.fecha_movimiento DESC";
         }
-        
+
         JSONObject vector = new JSONObject();
         ResultSet Response = this.getQuery(sql);
         try {
@@ -601,17 +619,17 @@ public class servicios_ini extends Thread {
         }
         return rta;
     }
-    
-    protected String setPasswd(JSONObject obj){
-        String rta="fail";
-        
+
+    protected String setPasswd(JSONObject obj) {
+        String rta = "fail";
+
         try {
-            String sql = "SELECT IF(PASSWORD('"+obj.get("antigua").toString()+"')=(SELECT llave FROM usuarios WHERE usuarios.id='"+obj.get("idUser").toString()+"'),'success','fail') AS rta";
+            String sql = "SELECT IF(PASSWORD('" + obj.get("antigua").toString() + "')=(SELECT llave FROM usuarios WHERE usuarios.id='" + obj.get("idUser").toString() + "'),'success','fail') AS rta";
             Statement sentencia;
             sentencia = ConectDB.createStatement();
             ResultSet query = sentencia.executeQuery(sql);
             query.first();
-            if(query.getString("rta").equals("success")){
+            if (query.getString("rta").equals("success")) {
                 String sql2 = "UPDATE usuarios SET llave = PASSWORD(?) WHERE usuarios.id=?";
                 PreparedStatement sentencia2 = ConectDB.prepareStatement(sql2);
                 sentencia2.setString(1, obj.get("nueva").toString());
@@ -626,7 +644,159 @@ public class servicios_ini extends Thread {
         } catch (SQLException ex) {
             Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
+        return rta;
+    }
+
+    private String getListTPMovimientos() {
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT * FROM tipo_movimientos");
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String cuentas[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("id", Response.getString("id"));
+                vector.put("nom", Response.getString("nombre"));
+                vector.put("local", Response.getString("costo_local"));
+                vector.put("remoto", Response.getString("costo_remoto"));
+                cuentas[v] = json.encode(vector);
+            }
+            $rta = "{\"tipos\":[" + String.join(",", cuentas) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return $rta;
+    }
+
+    private String setTPMovimiento(JSONObject obj) {
+        String rta = "Falla";
+        PreparedStatement SentenciaBitacora = null;
+        String sql = "UPDATE tipo_movimientos SET costo_local = ?, costo_remoto= ? WHERE id = ?";
+        try {
+            SentenciaBitacora = ConectDB.prepareStatement(sql);
+            SentenciaBitacora.setInt(1, Integer.parseInt(obj.get("local").toString()));
+            SentenciaBitacora.setInt(2, Integer.parseInt(obj.get("remoto").toString()));
+            SentenciaBitacora.setInt(3, Integer.parseInt(obj.get("id").toString()));
+            SentenciaBitacora.executeUpdate();
+
+            rta = "Guardar OK..";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rta;
+    }
+
+    private String getListSucursales() {
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT * FROM sucursales");
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String cuentas[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("id", Response.getString("id"));
+                vector.put("nom", Response.getString("nombre"));
+                vector.put("ciud", Response.getString("ciudad"));
+                vector.put("dir", Response.getString("direccion"));
+                cuentas[v] = json.encode(vector);
+            }
+            $rta = "{\"sucursales\":[" + String.join(",", cuentas) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return $rta;
+    }
+
+    private String setTSucursal(JSONObject obj) {
+        String rta = "Falla";
+        PreparedStatement SentenciaBitacora = null;
+        if (Integer.parseInt(obj.get("id").toString()) != -1) {
+            String sql = "UPDATE sucursales SET nombre=?, ciudad=?, direccion= ? WHERE id = ?";
+            try {
+                SentenciaBitacora = ConectDB.prepareStatement(sql);
+                SentenciaBitacora.setString(1, (obj.get("nom").toString()));
+                SentenciaBitacora.setString(2, (obj.get("ciud").toString()));
+                SentenciaBitacora.setString(3, (obj.get("dir").toString()));
+                SentenciaBitacora.setInt(4, Integer.parseInt(obj.get("id").toString()));
+                SentenciaBitacora.executeUpdate();
+
+                rta = "Actualizar OK..";
+            } catch (SQLException ex) {
+                Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            String sql = "INSERT INTO sucursales(nombre,ciudad,direccion) VALUES (?,?,?)";
+            try {
+                SentenciaBitacora = ConectDB.prepareStatement(sql);
+                SentenciaBitacora.setString(1, (obj.get("nom").toString()));
+                SentenciaBitacora.setString(2, (obj.get("ciud").toString()));
+                SentenciaBitacora.setString(3, (obj.get("dir").toString()));
+                SentenciaBitacora.executeUpdate();
+
+                rta = "Agregar OK..";
+            } catch (SQLException ex) {
+                Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return rta;
+    }
+
+    private String getListTPCuenta() {
+        String $rta = "";
+        JSONObject vector = new JSONObject();
+        ResultSet Response = this.getQuery("SELECT * FROM tipo_cuentas");
+        try {
+            Response.last();
+            int cantFilas = Response.getRow();
+            Response.beforeFirst();
+            String cuentas[] = new String[cantFilas];
+            for (int v = 0; Response.next(); v++) {
+                vector.clear();
+                vector.put("id", Response.getString("id"));
+                vector.put("nom", Response.getString("nombre"));
+                cuentas[v] = json.encode(vector);
+            }
+            $rta = "{\"cuentas\":[" + String.join(",", cuentas) + "]}";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return $rta;
+    }
+
+    private String setTTPCuenta(JSONObject obj) {
+        String rta = "Falla";
+        PreparedStatement SentenciaBitacora = null;
+        if (Integer.parseInt(obj.get("id").toString()) != -1) {
+            String sql = "UPDATE tipo_cuentas SET nombre=? WHERE id = ?";
+            try {
+                SentenciaBitacora = ConectDB.prepareStatement(sql);
+                SentenciaBitacora.setString(1, (obj.get("tipo").toString()));
+                SentenciaBitacora.setInt(2, Integer.parseInt(obj.get("id").toString()));
+                SentenciaBitacora.executeUpdate();
+
+                rta = "Actualizar OK..";
+            } catch (SQLException ex) {
+                Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            String sql = "INSERT INTO tipo_cuentas(nombre) VALUES (?)";
+            try {
+                SentenciaBitacora = ConectDB.prepareStatement(sql);
+                SentenciaBitacora.setString(1, (obj.get("tipo").toString()));
+                SentenciaBitacora.executeUpdate();
+
+                rta = "Agregar OK..";
+            } catch (SQLException ex) {
+                Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return rta;
     }
 }
