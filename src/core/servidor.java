@@ -8,6 +8,7 @@ package core;
 import config.DataBase;
 import config.Storages;
 import interfaces.login;
+import java.sql.Connection;
 
 /**
  *
@@ -24,7 +25,9 @@ public class servidor {
             login.main(null);
         } else {
             DataBase N = new DataBase();
-            new servicios_ini(N.getConexion()).start();
+            Connection C =N.getConexion();
+            new servicios_ini(C).start();
+            new servicios_ini(C).backups();
         }
     }
 

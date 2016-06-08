@@ -7,6 +7,7 @@ package interfaces;
 
 import config.Globales;
 import core.pasarela;
+import interfaces.min.adm_backup;
 import interfaces.min.adm_costos_mov;
 import interfaces.min.adm_sucs;
 import interfaces.min.adm_tipos_cuenta;
@@ -35,6 +36,7 @@ public class principal_admin extends javax.swing.JFrame {
     adm_costos_mov admCuentasTP = new adm_costos_mov();
     adm_sucs admSucursales = new adm_sucs();
     adm_tipos_cuenta admTPCuentas = new adm_tipos_cuenta();
+    adm_backup admBackup = new adm_backup();
 
     public principal_admin() {
         initComponents();
@@ -246,11 +248,11 @@ public class principal_admin extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        try {
-            exportar();
-        } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(ejemploExportar.class.getName()).log(Level.SEVERE, null, ex);
+        if (!Ocultar(admBackup.getTitle())) {
+            contentPanel.add(admBackup);
         }
+        admBackup.setVisible(true);
+        admBackup.requestFocus();
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -313,39 +315,6 @@ public class principal_admin extends javax.swing.JFrame {
                 new principal_admin().setVisible(true);
             }
         });
-    }
-
-    private void exportar() throws IOException, InterruptedException {
-        chooser = new JFileChooser();
-        chooser.setDialogTitle("Seleccione carpeta para guardar");
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.setAcceptAllFileFilterUsed(false);
-
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            String rutaCarpeta = chooser.getSelectedFile().getAbsolutePath();
-            dumpDB(rutaCarpeta);
-        }
-    }
-
-    private void dumpDB(String rutaCarpeta) throws IOException, InterruptedException {
-        String host = "127.0.0.1";
-        String base = "java-final";
-        String usuario = "root";
-        String passwd = "";
-
-        DateFormat formato = new SimpleDateFormat("dd-mm-yyyy");
-        Date fecha = new Date();
-        String fecha2 = formato.format(fecha);
-
-        String archivo = base + "-" + fecha2 + ".sql";
-        String comando = "mysqldump -u " + usuario + " -h " + host + " -p" + passwd + " " + base + " -r " + rutaCarpeta + "/" + archivo;
-
-        Process procesaComando = Runtime.getRuntime().exec(comando);
-        if (procesaComando.waitFor() == 0) {
-            System.out.println("Backup exitosa");
-        } else {
-            System.out.println("Backup falló " + comando);
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -56,10 +57,34 @@ public class servicios_ini extends Thread {
         String MSJ;
         try {
             Cerebellum = new ServerSocket(6969);
-            System.out.println("Servicios Iniciados");
+            System.out.println("Servicios Iniciados generales [-OK-]");
             while (true) {
                 Soquete = Cerebellum.accept();
                 System.out.println("Procesando solicitud PID: " + Math.round(Math.random() * 10000));
+                Cabezon = new BufferedReader(new InputStreamReader(Soquete.getInputStream()));
+                alCabezon = new DataOutputStream(Soquete.getOutputStream());
+                MSJ = Cabezon.readLine();
+                MSJ = this.service(MSJ);
+                alCabezon.writeUTF(MSJ);
+                alCabezon.close();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void backups() {
+        BufferedReader Cabezon;
+        DataOutputStream alCabezon;
+        ServerSocket Cerebellum = null;
+        Socket Soquete = null;
+        String MSJ;
+        try {
+            Cerebellum = new ServerSocket(9960);
+            System.err.println("Servicios Servicio de Backups [-ON-]");
+            while (true) {
+                Soquete = Cerebellum.accept();
+                System.err.println("Procesando solicitud Backup PID: " + Math.round(Math.random() * 10000));
                 Cabezon = new BufferedReader(new InputStreamReader(Soquete.getInputStream()));
                 alCabezon = new DataOutputStream(Soquete.getOutputStream());
                 MSJ = Cabezon.readLine();
@@ -152,6 +177,12 @@ public class servicios_ini extends Thread {
                 break;
             case "setTTPCuenta":
                 Response = setTTPCuenta(obj);
+                break;
+            case "getBackup":
+                Response = getBackup();
+                break;
+            case "setBackup":
+                Response = setBackup(obj);
                 break;
             default:
                 obj.clear();
@@ -798,5 +829,263 @@ public class servicios_ini extends Thread {
             }
         }
         return rta;
+    }
+
+    private String getBackup() {
+        String rta = "";
+        String tablas[] = new String[9];
+
+        tablas[0] = "personas";
+        tablas[1] = "usuarios";
+        tablas[2] = "tipo_movimientos";
+        tablas[3] = "tipo_cuentas";
+        tablas[4] = "sucursales";
+        tablas[5] = "cuentas";
+        tablas[6] = "movimientos";
+        tablas[7] = "bitacora_sesion";
+        tablas[8] = "bitacora_edicion_usuarios";
+
+        JSONObject vector = new JSONObject();
+        for (int K = 0; K < tablas.length; K++) {
+            ResultSet Response = this.getQuery("SELECT * FROM " + tablas[K]);
+            try {
+                Response.last();
+                int cantFilas = Response.getRow();
+                Response.beforeFirst();
+                String cuentas[] = new String[cantFilas];
+                for (int v = 0; Response.next(); v++) {
+                    vector.clear();
+                    switch (tablas[K]) {
+                        case "personas":
+                            vector.put("id", Response.getString("id"));
+                            vector.put("num_ident", Response.getString("num_ident"));
+                            vector.put("nombres", Response.getString("nombres"));
+                            vector.put("correo", Response.getString("correo"));
+                            vector.put("celular", Response.getString("celular"));
+                            break;
+                        case "usuarios":
+                            vector.put("id", Response.getString("id"));
+                            vector.put("persona_id", Response.getString("persona_id"));
+                            vector.put("usuario", Response.getString("usuario"));
+                            vector.put("llave", Response.getString("llave"));
+                            vector.put("rol", Response.getString("rol"));
+                            break;
+                        case "tipo_movimientos":
+                            vector.put("id", Response.getString("id"));
+                            vector.put("nombre", Response.getString("nombre"));
+                            vector.put("costo_local", Response.getString("costo_local"));
+                            vector.put("costo_remoto", Response.getString("costo_remoto"));
+                            break;
+                        case "tipo_cuentas":
+                            vector.put("id", Response.getString("id"));
+                            vector.put("nombre", Response.getString("nombre"));
+                            break;
+                        case "sucursales":
+                            vector.put("id", Response.getString("id"));
+                            vector.put("nombre", Response.getString("nombre"));
+                            vector.put("ciudad", Response.getString("ciudad"));
+                            vector.put("direccion", Response.getString("direccion"));
+                            break;
+                        case "cuentas":
+                            vector.put("id", Response.getString("id"));
+                            vector.put("persona_id", Response.getString("persona_id"));
+                            vector.put("tipo_cuenta_id", Response.getString("tipo_cuenta_id"));
+                            vector.put("sucursal_id", Response.getString("sucursal_id"));
+                            vector.put("numero_cuenta", Response.getString("numero_cuenta"));
+                            vector.put("saldo", Response.getString("saldo"));
+                            vector.put("fecha_apertura", Response.getString("fecha_apertura"));
+                            break;
+                        case "movimientos":
+                            vector.put("id", Response.getString("id"));
+                            vector.put("cuenta_id", Response.getString("cuenta_id"));
+                            vector.put("tipo_movimiento_id", Response.getString("tipo_movimiento_id"));
+                            vector.put("sucursal_id", Response.getString("sucursal_id"));
+                            vector.put("saldo_anterior", Response.getString("saldo_anterior"));
+                            vector.put("saldo", Response.getString("saldo"));
+                            vector.put("valor_movimiento", Response.getString("valor_movimiento"));
+                            vector.put("costo_movimiento", Response.getString("costo_movimiento"));
+                            vector.put("fecha_movimiento", Response.getString("fecha_movimiento"));
+                            break;
+                        case "bitacora_sesion":
+                            vector.put("id", Response.getString("id"));
+                            vector.put("usuario_id", Response.getString("usuario_id"));
+                            vector.put("sucursal_id", Response.getString("sucursal_id"));
+                            vector.put("inicio", Response.getString("inicio"));
+                            vector.put("fin", Response.getString("fin"));
+                            break;
+                        case "bitacora_edicion_usuarios":
+                            vector.put("id", Response.getString("id"));
+                            vector.put("usuario_editor", Response.getString("usuario_editor"));
+                            vector.put("usuario_editado", Response.getString("usuario_editado"));
+                            vector.put("fecha_edicion", Response.getString("fecha_edicion"));
+                            vector.put("ant_num_ident", Response.getString("ant_num_ident"));
+                            vector.put("ant_nombres", Response.getString("ant_nombres"));
+                            vector.put("ant_correo", Response.getString("ant_correo"));
+                            vector.put("ant_celular", Response.getString("ant_celular"));
+                            vector.put("des_num_ident", Response.getString("des_num_ident"));
+                            vector.put("des_nombres", Response.getString("des_nombres"));
+                            vector.put("des_correo", Response.getString("des_correo"));
+                            vector.put("des_celular", Response.getString("des_celular"));
+                            break;
+                    }
+                    cuentas[v] = json.encode(vector);
+                }
+                rta += "{\"" + tablas[K] + "\":[" + String.join(",", cuentas) + "]}\n";
+            } catch (SQLException ex) {
+                Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return rta;
+    }
+
+    private String setBackup(JSONObject obj) {
+        PreparedStatement INSERT = null, DROP = null;
+        String SQL_INSERT = "INSERT INTO " + obj.get("entidad").toString() + " VALUES ";
+        JSONArray arreglo = (JSONArray) obj.get(obj.get("entidad"));
+        String RTA = "NO";
+        try {
+            DROP = ConectDB.prepareStatement("DELETE FROM " + obj.get("entidad").toString(), PreparedStatement.RETURN_GENERATED_KEYS);
+            switch (obj.get("entidad").toString()) {
+                case "personas":
+                    DROP.executeUpdate();
+                    for (int i = 0; i < arreglo.size(); i++) {
+                        JSONObject Dt = json.decode(arreglo.get(i).toString());
+                        String sql = SQL_INSERT + "(?,?,?,?,?)";
+                        INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                        INSERT.setString(1, Dt.get("id").toString());
+                        INSERT.setString(2, Dt.get("num_ident").toString());
+                        INSERT.setString(3, Dt.get("nombres").toString());
+                        INSERT.setString(4, Dt.get("correo").toString());
+                        INSERT.setString(5, Dt.get("celular").toString());
+                        INSERT.executeUpdate();
+                    }
+                    break;
+                case "usuarios":
+                    DROP.executeUpdate();
+                    for (int i = 0; i < arreglo.size(); i++) {
+                        JSONObject Dt = json.decode(arreglo.get(i).toString());
+                        String sql = SQL_INSERT + "(?,?,?,?,?)";
+                        INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                        INSERT.setString(1, Dt.get("id").toString());
+                        INSERT.setString(2, Dt.get("persona_id").toString());
+                        INSERT.setString(3, Dt.get("usuario").toString());
+                        INSERT.setString(4, Dt.get("llave").toString());
+                        INSERT.setString(5, Dt.get("rol").toString());
+                        INSERT.executeUpdate();
+                    }
+                    break;
+                case "tipo_movimientos":
+                    DROP.executeUpdate();
+                    for (int i = 0; i < arreglo.size(); i++) {
+                        JSONObject Dt = json.decode(arreglo.get(i).toString());
+                        String sql = SQL_INSERT + "(?,?,?,?)";
+                        INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                        INSERT.setString(1, Dt.get("id").toString());
+                        INSERT.setString(2, Dt.get("nombre").toString());
+                        INSERT.setString(3, Dt.get("costo_local").toString());
+                        INSERT.setString(4, Dt.get("costo_remoto").toString());
+                        INSERT.executeUpdate();
+                    }
+                    break;
+                case "tipo_cuentas":
+                    DROP.executeUpdate();
+                    for (int i = 0; i < arreglo.size(); i++) {
+                        JSONObject Dt = json.decode(arreglo.get(i).toString());
+                        String sql = SQL_INSERT + "(?,?)";
+                        INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                        INSERT.setString(1, Dt.get("id").toString());
+                        INSERT.setString(2, Dt.get("nombre").toString());
+                        INSERT.executeUpdate();
+                    }
+                    break;
+                case "sucursales":
+                    DROP.executeUpdate();
+                    for (int i = 0; i < arreglo.size(); i++) {
+                        JSONObject Dt = json.decode(arreglo.get(i).toString());
+                        String sql = SQL_INSERT + "(?,?,?,?)";
+                        INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                        INSERT.setString(1, Dt.get("id").toString());
+                        INSERT.setString(2, Dt.get("nombre").toString());
+                        INSERT.setString(3, Dt.get("ciudad").toString());
+                        INSERT.setString(4, Dt.get("direccion").toString());
+                        INSERT.executeUpdate();
+                    }
+                    break;
+                case "cuentas":
+                    DROP.executeUpdate();
+                    for (int i = 0; i < arreglo.size(); i++) {
+                        JSONObject Dt = json.decode(arreglo.get(i).toString());
+                        String sql = SQL_INSERT + "(?,?,?,?,?,?,?)";
+                        INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                        INSERT.setString(1, Dt.get("id").toString());
+                        INSERT.setString(2, Dt.get("persona_id").toString());
+                        INSERT.setString(3, Dt.get("tipo_cuenta_id").toString());
+                        INSERT.setString(4, Dt.get("sucursal_id").toString());
+                        INSERT.setString(5, Dt.get("numero_cuenta").toString());
+                        INSERT.setString(6, Dt.get("saldo").toString());
+                        INSERT.setString(7, Dt.get("fecha_apertura").toString());
+                        INSERT.executeUpdate();
+                    }
+                    break;
+                case "movimientos":
+                    DROP.executeUpdate();
+                    for (int i = 0; i < arreglo.size(); i++) {
+                        JSONObject Dt = json.decode(arreglo.get(i).toString());
+                        String sql = SQL_INSERT + "(?,?,?,?,?,?,?,?,?)";
+                        INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                        INSERT.setString(1, Dt.get("id").toString());
+                        INSERT.setString(2, Dt.get("cuenta_id").toString());
+                        INSERT.setString(3, Dt.get("tipo_movimiento_id").toString());
+                        INSERT.setString(4, Dt.get("sucursal_id").toString());
+                        INSERT.setString(5, Dt.get("saldo_anterior").toString());
+                        INSERT.setString(6, Dt.get("saldo").toString());
+                        INSERT.setString(7, Dt.get("valor_movimiento").toString());
+                        INSERT.setString(8, Dt.get("costo_movimiento").toString());
+                        INSERT.setString(9, Dt.get("fecha_movimiento").toString());
+                        INSERT.executeUpdate();
+                    }
+                    break;
+                case "bitacora_sesion":
+                    DROP.executeUpdate();
+                    for (int i = 0; i < arreglo.size(); i++) {
+                        JSONObject Dt = json.decode(arreglo.get(i).toString());
+                        String sql = SQL_INSERT + "(?,?,?,?,?)";
+                        INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                        INSERT.setString(1, Dt.get("id").toString());
+                        INSERT.setString(2, Dt.get("usuario_id").toString());
+                        INSERT.setString(3, Dt.get("sucursal_id").toString());
+                        INSERT.setString(4, Dt.get("inicio").toString());
+                        INSERT.setString(5, Dt.get("fin").toString());
+                        INSERT.executeUpdate();
+                    }
+                    break;
+                case "bitacora_edicion_usuarios":
+                    DROP.executeUpdate();
+                    for (int i = 0; i < arreglo.size(); i++) {
+                        JSONObject Dt = json.decode(arreglo.get(i).toString());
+                        String sql = SQL_INSERT + "(?,?,?,?,?,?,?,?,?,?,?,?)";
+                        INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                        INSERT.setString(1, Dt.get("id").toString());
+                        INSERT.setString(2, Dt.get("usuario_editor").toString());
+                        INSERT.setString(3, Dt.get("usuario_editado").toString());
+                        INSERT.setString(4, Dt.get("fecha_edicion").toString());
+                        INSERT.setString(5, Dt.get("ant_num_ident").toString());
+                        INSERT.setString(6, Dt.get("ant_nombres").toString());
+                        INSERT.setString(7, Dt.get("ant_correo").toString());
+                        INSERT.setString(8, Dt.get("ant_celular").toString());
+                        INSERT.setString(9, Dt.get("des_num_ident").toString());
+                        INSERT.setString(10, Dt.get("des_nombres").toString());
+                        INSERT.setString(11, Dt.get("des_correo").toString());
+                        INSERT.setString(12, Dt.get("des_celular").toString());
+                        INSERT.executeUpdate();
+                    }
+                    break;
+
+            }
+            RTA = "OK";
+        } catch (SQLException ex) {
+            Logger.getLogger(servicios_ini.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return RTA;
     }
 }
