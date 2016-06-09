@@ -7,6 +7,7 @@ package core;
 
 import config.DataBase;
 import config.Storages;
+import interfaces.conf_terminal;
 import interfaces.login;
 import java.sql.Connection;
 
@@ -21,13 +22,16 @@ public class servidor {
      */
     public static void main(String[] args) {
 //        Storages.infoTerminal();
-        if (args.length > 0 && args[0].equals("cliente")) {
-            login.main(null);
-        } else {
+        if (args.length > 0 && args[0].equals("servidor")) {
             DataBase N = new DataBase();
-            Connection C =N.getConexion();
+            Connection C = N.getConexion();
             new servicios_ini(C).start();
             new servicios_ini(C).backups();
+            
+        } else if (args.length > 0 && args[0].equals("config")) {
+            conf_terminal.main(null);
+        } else {
+            login.main(null);
         }
     }
 

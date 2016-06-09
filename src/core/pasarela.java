@@ -10,6 +10,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import javax.swing.JOptionPane;
 import org.json.simple.JSONObject;
 
 /**
@@ -32,6 +33,8 @@ public class pasarela extends Thread {
             Soquete.close();
         } catch (IOException ex) {
             System.err.println("Servicio no disponibles");
+            JOptionPane.showMessageDialog(null, "inicie la aplicacion \"Taller_Final.jar config\" \npara configurar terminal", "Error de comunicacion", JOptionPane.ERROR_MESSAGE);
+            //System.exit(0);
         }
         return MSJ;
     }
@@ -50,6 +53,8 @@ public class pasarela extends Thread {
             Soquete.close();
         } catch (IOException ex) {
             System.err.println("Servicio no disponibles");
+            JOptionPane.showMessageDialog(null, "inicie la aplicacion \"Taller_Final.jar config\" \npara configurar terminal", "Error de comunicacion", JOptionPane.ERROR_MESSAGE);
+            //System.exit(0);
         }
         return MSJ;
     }
