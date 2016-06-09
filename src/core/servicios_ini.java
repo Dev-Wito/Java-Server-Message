@@ -962,13 +962,14 @@ public class servicios_ini extends Thread {
                     DROP.executeUpdate();
                     for (int i = 0; i < arreglo.size(); i++) {
                         JSONObject Dt = json.decode(arreglo.get(i).toString());
-                        String sql = SQL_INSERT + "(?,?,?,?,?)";
+                        String sql = SQL_INSERT + "(?,?,?,?,?,?)";
                         INSERT = ConectDB.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                         INSERT.setString(1, Dt.get("id").toString());
                         INSERT.setString(2, Dt.get("persona_id").toString());
                         INSERT.setString(3, Dt.get("usuario").toString());
                         INSERT.setString(4, Dt.get("llave").toString());
                         INSERT.setString(5, Dt.get("rol").toString());
+                        INSERT.setString(6, Dt.get("C").toString());
                         INSERT.executeUpdate();
                     }
                     break;
