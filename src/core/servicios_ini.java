@@ -873,7 +873,7 @@ public class servicios_ini extends Thread {
                             vector.put("usuario", Response.getString("usuario"));
                             vector.put("llave", Response.getString("llave"));
                             vector.put("rol", Response.getString("rol"));
-                            vector.put("C", Response.getString("C"));
+                            vector.put("C", 0);
                             break;
                         case "tipo_movimientos":
                             vector.put("id", Response.getString("id"));

@@ -275,7 +275,6 @@ resumen_operacion.setEnabled(true);
         String print;
         JSONObject vector = json.decode(rta);
         if (Integer.parseInt(vector.get("result").toString()) == 1) {
-            System.err.println(vector.get("costo_movimiento").toString());
             print = "Monto del movimiento: " + jTextField1.getText() + "\n"
                     + "Costo del movimiento: " + vector.get("costo_movimiento").toString() + "\n"
                     + "Saldo anterior: " + vector.get("saldo_anterior").toString() + "\n"

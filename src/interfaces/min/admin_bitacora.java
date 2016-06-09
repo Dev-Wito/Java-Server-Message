@@ -204,6 +204,11 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         jTabbedPane1.addTab("Movimientos", jPanel2);
 
         jButton3.setText("Actualizar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -283,6 +288,11 @@ public class admin_bitacora extends javax.swing.JInternalFrame {
         }
         jButton2.requestFocus();
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        llenarBitacoraUsuario();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void llenarClientes() {
         JSONObject Preparar = new JSONObject();
