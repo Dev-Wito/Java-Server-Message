@@ -171,7 +171,8 @@ public class adm_backup extends javax.swing.JInternalFrame {
         FileReader f = new FileReader(rutaArchivo);
         BufferedReader b = new BufferedReader(f);
         txt_log.setText("Importacion:\n");
-        while ((linea = b.readLine()) != null) {
+        int Cont = 0;
+        while ((linea = b.readLine()) != null && Cont<9) {
             lectura += linea + "\n";
             if (!linea.equals("")) {
                 int cortar = linea.indexOf("\":[");
@@ -180,6 +181,7 @@ public class adm_backup extends javax.swing.JInternalFrame {
                 vector.put("entidad", linea.substring(2, cortar));
                 txt_log.append("[-" + pasarela.backup(vector) + "-]   " + linea.substring(2, cortar) + "\n");
             }
+            Cont++;
         }
         b.close();
 
